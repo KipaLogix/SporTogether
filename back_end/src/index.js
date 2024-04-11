@@ -1,19 +1,22 @@
 const express = require('express');
+const userRoutes = require('./routes/UserRoutes');
 
 const app = express();
-const port = 3000;
+const PORT = process.env.PORT || 3000;
 
+// Middleware
 app.use(express.json());
 
-app.get('/', (req, res) => {
-    res.send('Hello World');
+// Routes
+app.use('/api/users', userRoutes);
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something went wrong!');
 });
 
-app.post('/json', (req, res) => {
-    const jsonData = req.body;
-    res.send(jsonData);
-});
-
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+// Start the server
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
