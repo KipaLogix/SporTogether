@@ -35,7 +35,8 @@ model Event {
   title        String
   description  String
   date         DateTime
-  location     String
+  latitude     Float?
+  longitude    Float?
   sport        Sport[]
   createdAt    DateTime @default(now())
   createdBy    User     @relation("CreatedEvents", fields: [userId], references: [id])
