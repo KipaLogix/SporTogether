@@ -3,12 +3,12 @@ const prisma = new PrismaClient();
 
 const createMessage = async (req, res) => {
     try {
-        const { text, userId, eventId } = req.body;
+        const { senderId, eventId, content } = req.body;
         const message = await prisma.message.create({
             data: {
-                text,
-                userId,
+                senderId,
                 eventId,
+                content
             },
         });
         res.status(201).json(message);

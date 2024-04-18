@@ -97,6 +97,7 @@ model Message {
   senderId  String
   event     Event    @relation("EventMessages", fields: [eventId], references: [id])
   eventId   String
+  content   String
 }
 
 model Review {
