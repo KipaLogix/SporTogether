@@ -17,7 +17,7 @@ const Login = () => {
     <PaperProvider>
       <View style={styles.container}>
         <TextInput label="Email" style={styles.form_input}/>
-        <TextInput label="Password" style={styles.form_input}/>
+        <TextInput label="Password" style={styles.form_input} secureTextEntry={true}/>
         <Button icon="soccer" mode="contained" style={styles.form_input} onPress={() => console.log('Pressed')}>
           <Text>Sign In</Text>
         </Button>
