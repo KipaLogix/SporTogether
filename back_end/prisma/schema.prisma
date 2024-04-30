@@ -46,7 +46,7 @@ model Event {
   Participants User[]   @relation("EventParticipants")
   Messages     Message[] @relation("EventMessages")
   Reviews      Review[]
-  Sport        Sport   @relation(fields: [sport], references: [id])
+  Sport        Sports   @relation(fields: [sport], references: [sport])
   sport      String
 }
 
@@ -81,7 +81,7 @@ model UserSettings {
   language  String @default("en")
 }
 
-model Sport {
-  id     String @id @default(uuid())
+model Sports {
+  sport     String @id @default(uuid())
   Events Event[]
 }

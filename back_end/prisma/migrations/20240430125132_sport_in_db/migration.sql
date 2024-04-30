@@ -12,11 +12,11 @@ ADD COLUMN     "sport" TEXT NOT NULL;
 DROP TYPE "Sport";
 
 -- CreateTable
-CREATE TABLE "Sport" (
-    "id" TEXT NOT NULL,
+CREATE TABLE "Sports" (
+    "sport" TEXT NOT NULL,
 
-    CONSTRAINT "Sport_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Sports_pkey" PRIMARY KEY ("sport")
 );
 
 -- AddForeignKey
-ALTER TABLE "Event" ADD CONSTRAINT "Event_sport_fkey" FOREIGN KEY ("sport") REFERENCES "Sport"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Event" ADD CONSTRAINT "Event_sport_fkey" FOREIGN KEY ("sport") REFERENCES "Sports"("sport") ON DELETE RESTRICT ON UPDATE CASCADE;
