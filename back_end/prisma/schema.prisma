@@ -40,55 +40,19 @@ model Event {
   date         DateTime
   latitude     Float?
   longitude    Float?
-  sport        Sport[]
   createdAt    DateTime @default(now())
   createdBy    User     @relation("CreatedEvents", fields: [userId], references: [id])
   userId       String
   Participants User[]   @relation("EventParticipants")
   Messages     Message[] @relation("EventMessages")
   Reviews      Review[]
+  Sport        Sport   @relation(fields: [sport], references: [id])
+  sport      String
 }
 
 enum Role {
   USER
   ADMIN
-}
-
-enum Sport {
-  FOOTBALL
-  BASKETBALL
-  TENNIS
-  VOLLEYBALL
-  HANDBALL
-  RUGBY
-  SWIMMING
-  RUNNING
-  CYCLING
-  GOLF
-  BOXING
-  MARTIAL_ARTS
-  YOGA
-  DANCE
-  FITNESS
-  GYMNASTICS
-  SKIING
-  SNOWBOARDING
-  ICE_SKATING
-  ICE_HOCKEY
-  CURLING
-  SQUASH
-  BADMINTON
-  TABLE_TENNIS
-  BILLIARDS
-  DARTS
-  CHESS
-  POKER
-  BRIDGE
-  BACKGAMMON
-  VIDEO_GAMES
-  BOARD_GAMES
-  CARD_GAMES
-  OTHER
 }
 
 model Message {
@@ -115,4 +79,9 @@ model UserSettings {
   userId    String @id
   theme     String @default("light")
   language  String @default("en")
+}
+
+model Sport {
+  id     String @id @default(uuid())
+  Events Event[]
 }
