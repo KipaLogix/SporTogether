@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const { resolveTypeReferenceDirective } = require('typescript');
 
 const createToken = (id) => {
-    return jwt.sign({ id }, process.env.SECRET, { expiresIn: '1d' });
+    return jwt.sign({ id }, process.env.SECRET, { expiresIn: '1m' });
 }
 
 const ENCRYPTION_SALT = 10;
