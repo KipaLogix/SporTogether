@@ -46,8 +46,8 @@ model Event {
   Participants User[]   @relation("EventParticipants")
   Messages     Message[] @relation("EventMessages")
   Reviews      Review[]
-  Sport        Sports   @relation(fields: [sport], references: [sport])
-  sport      String
+  Sport        Sport   @relation("SportEvents", fields: [sportId], references: [id])
+  sportId      Int
 }
 
 enum Role {
@@ -81,7 +81,8 @@ model UserSettings {
   language  String @default("en")
 }
 
-model Sports {
-  sport     String @id @default(uuid())
-  Events Event[]
+model Sport {
+  id     Int @id @default(autoincrement())
+  sport  String
+  Events Event[] @relation("SportEvents")
 }
