@@ -1,9 +1,16 @@
 const { PrismaClient } = require('@prisma/client');
+
 const prisma = new PrismaClient();
+
+const event_logger = require('../loggers/Loggers').event_logger;
 
 const createEvent = async (req, res) => {
     try {
+
+        event_logger.info("Creating a new event");
         const { title, description, date, userId, sportId, latitude, longitude } = req.body;
+        event_logger.info("Event data: " + JSON.stringify(req.body));
+
         const event = await prisma.event.create({
             /*
             {
@@ -27,9 +34,10 @@ const createEvent = async (req, res) => {
                 sportId,
             },
         });
+        event_logger.info("Event created successfully");
         res.status(201).json(event);
     } catch (error) {
-        console.error(error);
+        event_logger.error("Error creating event: " + error);
         res.status(500).json({ error: 'Failed to create event' });
     }
 };
@@ -39,7 +47,9 @@ const getEventsByLocationAndArea = async (req, res) => {
     try {
 
         const { latitude, longitude, area, sportId } = req.params;
-        console.log(req.params)
+
+        event_logger.info("Fetching events by location and area");
+
 
         // Calculate the area in degrees based on the given area in kilometers
         const areaInDegrees = 0.0144927536231884 * parseFloat(area);
@@ -67,6 +77,7 @@ const getEventsByLocationAndArea = async (req, res) => {
             whereClause.sportId = sportId;
         }
 
+        event_logger.info("Event data: " + JSON.stringify(req.body));
         /*
         {
             "latitude": 46.756658,
@@ -81,9 +92,10 @@ const getEventsByLocationAndArea = async (req, res) => {
             where: whereClause,
         });
 
+        event_logger.info("Events fetched successfully");
         res.status(200).json(events);
     } catch (error) {
-        console.error(error);
+        event_logger.error("Error fetching events: " + error);
         res.status(500).json({ error: 'Failed to get events by location and area' });
     }
 };
