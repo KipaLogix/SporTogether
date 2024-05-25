@@ -165,5 +165,5 @@ async function registerUser(req, res) {
 }
 
 
-module.exports = { createUser, getUsers, getUserById, updateUser, deleteUser, loginUser, registerUser };
+module.exports = { createUser, getUserById, updateUser, deleteUser, loginUser, registerUser };
 
