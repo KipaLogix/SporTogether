@@ -3,9 +3,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
 import { PaperProvider } from 'react-native-paper';
-import HomeScreen from './app/index';
+import HomeScreen from './app/_layout';
 import LoginScreen from './app/login';
-import { SplashScreen } from 'expo-router';
+import { SplashScreen, Stack } from 'expo-router';
 import { useEffect } from 'react';
 import {useFonts} from 'expo-font';
 
@@ -36,22 +36,16 @@ export default function RootLayout() {
   if(!loaded) {
     return null;
   }
+
+  return <RootLayoutNav />;
 }
 
-
-const Stack = createNativeStackNavigator();
-
-
-// export default function App() {
-//   return (
-//     <PaperProvider>
-//       <NavigationContainer>
-//         <Stack.Navigator initialRouteName="Home">
-//           <Stack.Screen name="Home" component={HomeScreen} />
-//           <Stack.Screen name="Login" component={LoginScreen} />
-//         </Stack.Navigator>
-//       </NavigationContainer>
-//       <StatusBar style="auto" />
-//     </PaperProvider>
-//   );
-// }
+function RootLayoutNav() {
+  return (
+    <PaperProvider>
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{headerShown: false}}/>
+      </Stack>
+    </PaperProvider>
+  );
+}
