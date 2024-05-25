@@ -4,11 +4,19 @@ const eventRoutes = require('./routes/EventRoutes');
 const messageRoutes = require('./routes/MessageRoutes');
 const cors = require('cors');
 
+const cors = require('cors');
+
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
+
+// Use CORS middleware to allow requests from all origins
+app.use(cors({
+    origin: '*',
+}));
 
 // Routes
 app.use('/api/users', userRoutes);
