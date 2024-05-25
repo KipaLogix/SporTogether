@@ -37,7 +37,9 @@ const createEvent = async (req, res) => {
 
 const getEventsByLocationAndArea = async (req, res) => {
     try {
-        const { latitude, longitude, area, sport } = req.body;
+        
+        const { latitude, longitude, area, sport } = req.query;
+        console.log(req.query)
 
         // Calculate the area in degrees based on the given area in kilometers
         const areaInDegrees = 0.0144927536231884 * parseFloat(area);
@@ -47,6 +49,8 @@ const getEventsByLocationAndArea = async (req, res) => {
         const maxLatitude = parseFloat(latitude) + parseFloat(areaInDegrees);
         const minLongitude = parseFloat(longitude) - parseFloat(areaInDegrees);
         const maxLongitude = parseFloat(longitude) + parseFloat(areaInDegrees);
+
+
 
         let whereClause = {
             latitude: {
@@ -73,6 +77,7 @@ const getEventsByLocationAndArea = async (req, res) => {
             "sport": "VOLLEYBALL" or null to get all sports
         }
         */
+       console.log(whereClause)
 
         const events = await prisma.event.findMany({
             where: whereClause,
