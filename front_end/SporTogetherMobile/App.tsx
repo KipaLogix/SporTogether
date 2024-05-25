@@ -6,6 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from './app/screens/Home';
 import Login from './app/screens/Login';
 import Register from './app/screens/Register';
+import RootLayout from '@/app/_layout';
 
 const Stack = createNativeStackNavigator();
 
@@ -27,6 +28,7 @@ export const Layout = () => {
         options={{
           headerRight: () => <Button onPress={onLogout} title="Sign Out" />,
         }}/>) :
+        
         (<>
           < Stack.Screen name="Login" component={Login} />
           < Stack.Screen name="Register" component={Register} />

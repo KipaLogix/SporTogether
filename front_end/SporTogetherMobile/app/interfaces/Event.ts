@@ -10,7 +10,7 @@ export interface Event {
     longitude?: number;
     sport: Sport[];
     createdAt: string; // ISO date string
-    createdBy: User;
+    createdBy: number;
     userId: string;
     Participants: User[];
   }

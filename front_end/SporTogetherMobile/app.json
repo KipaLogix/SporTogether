@@ -4,6 +4,7 @@
     "slug": "SporTogetherMobile",
     "version": "1.0.0",
     "orientation": "portrait",
+    "scheme": "com.kipalogix.SporTogetherApp",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
@@ -24,7 +25,12 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-secure-store"
-    ]
+      "expo-secure-store",
+      "expo-router"
+    ],
+    "experiments": {
+      "tsconfigPaths": true,
+      "typedRoutes": true
+    }
   }
 }

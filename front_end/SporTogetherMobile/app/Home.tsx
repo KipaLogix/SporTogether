@@ -3,8 +3,8 @@ import { PaperProvider } from 'react-native-paper';
 import { useEffect, useState } from 'react';
 import * as Location from 'expo-location';
 import axios from 'axios';
-import EventsMap from '../../components/EventsMap';
-import { Event } from '../interfaces/Event'; // Import the Event type
+import EventsMap from '@/components/EventsMap';
+import { Event } from './interfaces/Event'; // Import the Event type
 import RootLayoutNav  from '@/app/_layout'; // Import the RootLayoutNav component
 
 export default function Home() {
