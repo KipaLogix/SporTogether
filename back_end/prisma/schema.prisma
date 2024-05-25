@@ -28,6 +28,9 @@ model User {
   createdAt      DateTime @default(now())
   Event          Event[]  @relation("CreatedEvents")
   Participations Event[]  @relation("EventParticipants")
+  SentMessages   Message[] @relation("SentMessages")
+  Reviews        Review[]
+  Settings       UserSettings?
 }
 
 model Event {
@@ -37,11 +40,14 @@ model Event {
   date         DateTime
   latitude     Float?
   longitude    Float?
-  sport        Sport[]
   createdAt    DateTime @default(now())
   createdBy    User     @relation("CreatedEvents", fields: [userId], references: [id])
   userId       String
   Participants User[]   @relation("EventParticipants")
+  Messages     Message[] @relation("EventMessages")
+  Reviews      Review[]
+  Sport        Sport   @relation("SportEvents", fields: [sportId], references: [id])
+  sportId      Int
 }
 
 enum Role {
@@ -49,39 +55,34 @@ enum Role {
   ADMIN
 }
 
-enum Sport {
-  FOOTBALL
-  BASKETBALL
-  TENNIS
-  VOLLEYBALL
-  HANDBALL
-  RUGBY
-  SWIMMING
-  RUNNING
-  CYCLING
-  GOLF
-  BOXING
-  MARTIAL_ARTS
-  YOGA
-  DANCE
-  FITNESS
-  GYMNASTICS
-  SKIING
-  SNOWBOARDING
-  ICE_SKATING
-  ICE_HOCKEY
-  CURLING
-  SQUASH
-  BADMINTON
-  TABLE_TENNIS
-  BILLIARDS
-  DARTS
-  CHESS
-  POKER
-  BRIDGE
-  BACKGAMMON
-  VIDEO_GAMES
-  BOARD_GAMES
-  CARD_GAMES
-  OTHER
+model Message {
+  id        String   @id @default(uuid())
+  sender    User     @relation("SentMessages", fields: [senderId], references: [id])
+  senderId  String
+  event     Event    @relation("EventMessages", fields: [eventId], references: [id])
+  eventId   String
+  content   String
+}
+
+model Review {
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  event     Event    @relation(fields: [eventId], references: [id])
+  eventId   String
+  rating    Int
+  comment   String
+  @@id([userId, eventId])
+}
+
+model UserSettings {
+  user      User   @relation(fields: [userId], references: [id])
+  userId    String @id
+  theme     String @default("light")
+  language  String @default("en")
+}
+
+model Sport {
+  id     Int @id @default(autoincrement())
+  sport  String
+  Events Event[] @relation("SportEvents")
 }

@@ -1,49 +1,66 @@
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View } from 'react-native';
 import { PaperProvider } from 'react-native-paper';
-import { SplashScreen, Stack } from 'expo-router';
-import { useEffect } from 'react';
-import {useFonts} from 'expo-font';
+import { useEffect, useState } from 'react';
+import * as Location from 'expo-location';
+import axios from 'axios';
+import EventsMap from './components/EventsMap';
+import { Event } from './interfaces/types'; // Import the Event type
 
-export {
-  ErrorBoundary,
-  }  from 'expo-router';
-
-export const unstable_settings = {
-  initialRouteName: '(tabs)',
-};
-
-SplashScreen.preventAutoHideAsync();
-
-export default function RootLayout() {
-    const [loaded, error] = useFonts({
-      SpaceMono: require('./assets/fonts/SpaceMono-Regular.ttf'),
-    });
+export default function App() {
+  const [location, setLocation] = useState<{
+    latitude: number;
+    longitude: number;
+    latitudeDelta: number;
+    longitudeDelta: number;
+  } | null>(null);
+  const [events, setEvents] = useState<Event[]>([]);
 
   useEffect(() => {
-    if (error) throw error;
-  }, [error]);
+    const getPermissionAndLocation = async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.log('Permission denied');
+        return;
+      }
+      const currentLocation = await Location.getCurrentPositionAsync({});
+      setLocation({
+        latitude: currentLocation.coords.latitude,
+        longitude: currentLocation.coords.longitude,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
+      });
+      console.log('Got permission forLocation:', currentLocation);
+    };
+
+    getPermissionAndLocation();
+  }, []);
 
   useEffect(() => {
-      if (loaded){ SplashScreen.hideAsync();
+    const fetchEventsByLocation = async (latitude: number, longitude: number) => {
+      const root_URL = 'http://192.168.100.39:3000/api/';
+      const GET_EVENTS_API_URL = root_URL + 'events/';
+      try {
+        const response = await axios.get<Event[]>(GET_EVENTS_API_URL, {
+          params: {
+            latitude: latitude,
+            longitude: longitude,
+            area: 160,
+            sport: null,
+          },
+        });
+        setEvents(response.data);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    };
+
+    if (location) {
+      fetchEventsByLocation(location.latitude, location.longitude);
     }
-  }, [loaded]);
+  }, [location]);
 
-  if(!loaded) {
-    return null;
-  }
-
-  return <RootLayoutNav />;
-}
-
-function RootLayoutNav() {
   return (
     <PaperProvider>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{headerShown: false}}/>
-      </Stack>
+      <EventsMap events={events} location={location} />
     </PaperProvider>
   );
 }
