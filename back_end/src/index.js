@@ -2,6 +2,7 @@ const express = require('express');
 const userRoutes = require('./routes/UserRoutes');
 const eventRoutes = require('./routes/EventRoutes');
 const messageRoutes = require('./routes/MessageRoutes');
+const cors = require('cors');
 
 const cors = require('cors');
 
@@ -27,6 +28,11 @@ app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send('Something went wrong!');
 });
+
+// Use CORS middleware to allow requests from all origins
+app.use(cors({
+    origin: '*',
+}));
 
 // Start the server
 app.listen(PORT, () => {

@@ -1,3 +1,4 @@
+
 import { PaperProvider } from 'react-native-paper';
 import { useEffect, useState } from 'react';
 import * as Location from 'expo-location';
