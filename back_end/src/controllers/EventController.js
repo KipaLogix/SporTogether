@@ -54,6 +54,8 @@ const getEventsByLocationAndArea = async (req, res) => {
         const minLongitude = parseFloat(longitude) - parseFloat(areaInDegrees);
         const maxLongitude = parseFloat(longitude) + parseFloat(areaInDegrees);
 
+
+
         let whereClause = {
             latitude: {
                 gte: minLatitude,
@@ -80,6 +82,7 @@ const getEventsByLocationAndArea = async (req, res) => {
             "sport": "VOLLEYBALL" or null to get all sports
         }
         */
+       console.log(whereClause)
 
         const events = await prisma.event.findMany({
             where: whereClause,

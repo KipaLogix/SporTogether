@@ -1,5 +1,6 @@
 {
   "expo": {
+    "jsEngine": "hermes",
     "name": "SporTogetherApp",
     "slug": "SporTogetherApp",
     "version": "1.0.0",
