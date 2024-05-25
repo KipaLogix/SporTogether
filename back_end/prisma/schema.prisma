@@ -14,37 +14,37 @@ datasource db {
 }
 
 model User {
-  id             String   @id @default(uuid())
-  username       String   @unique
-  email          String   @unique
+  id             String        @id @default(uuid())
+  username       String        @unique
+  email          String        @unique
   password       String
   latitude       Float?
   longitude      Float?
   country        String?
   city           String?
-  role           Role     @default(USER)
+  role           Role          @default(USER)
   first_name     String?
   last_name      String?
-  createdAt      DateTime @default(now())
-  Event          Event[]  @relation("CreatedEvents")
-  Participations Event[]  @relation("EventParticipants")
-  SentMessages   Message[] @relation("SentMessages")
+  createdAt      DateTime      @default(now())
+  Event          Event[]       @relation("CreatedEvents")
+  Participations Event[]       @relation("EventParticipants")
+  SentMessages   Message[]     @relation("SentMessages")
   Reviews        Review[]
   Settings       UserSettings?
 }
 
 model Event {
-  id           String   @id @default(uuid())
+  id           String    @id @default(uuid())
   title        String
   description  String
   date         DateTime
   latitude     Float?
   longitude    Float?
   sport        Sport[]
-  createdAt    DateTime @default(now())
-  createdBy    User     @relation("CreatedEvents", fields: [userId], references: [id])
+  createdAt    DateTime  @default(now())
+  createdBy    User      @relation("CreatedEvents", fields: [userId], references: [id])
   userId       String
-  Participants User[]   @relation("EventParticipants")
+  Participants User[]    @relation("EventParticipants")
   Messages     Message[] @relation("EventMessages")
   Reviews      Review[]
 }
@@ -92,27 +92,28 @@ enum Sport {
 }
 
 model Message {
-  id        String   @id @default(uuid())
-  sender    User     @relation("SentMessages", fields: [senderId], references: [id])
-  senderId  String
-  event     Event    @relation("EventMessages", fields: [eventId], references: [id])
-  eventId   String
-  content   String
+  id       String @id @default(uuid())
+  sender   User   @relation("SentMessages", fields: [senderId], references: [id])
+  senderId String
+  event    Event  @relation("EventMessages", fields: [eventId], references: [id])
+  eventId  String
+  content  String
 }
 
 model Review {
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-  event     Event    @relation(fields: [eventId], references: [id])
-  eventId   String
-  rating    Int
-  comment   String
+  user    User   @relation(fields: [userId], references: [id])
+  userId  String
+  event   Event  @relation(fields: [eventId], references: [id])
+  eventId String
+  rating  Int
+  comment String
+
   @@id([userId, eventId])
 }
 
 model UserSettings {
-  user      User   @relation(fields: [userId], references: [id])
-  userId    String @id
-  theme     String @default("light")
-  language  String @default("en")
+  user     User   @relation(fields: [userId], references: [id])
+  userId   String @id
+  theme    String @default("light")
+  language String @default("en")
 }
