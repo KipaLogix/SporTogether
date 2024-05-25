@@ -21,19 +21,6 @@ async function createUser(req, res) {
     }
 }
 
-async function getUsers(req, res) {
-    user_logger.info("Fetching all users");
-    try {
-        const users = await prisma.user.findMany();
-        res.json(users);
-        user_logger.info("Users fetched successfully");
-    } catch (error) {
-        user_logger.error("Error fetching users: " + error);
-        res.status(500).json({ error: 'Error fetching users' });
-    }
-
-}
-
 async function getUserById(req, res) {
     user_logger.info("Fetching user by ID");
     const userId = req.params.id;
@@ -54,12 +41,12 @@ async function getUserById(req, res) {
 async function updateUser(req, res) {
     user_logger.info("Updating user");
     const userId = req.params.id;
-    const { username, email, password } = req.body;
+    const { username, email, password, first_name, last_name, city, country, latitude, longitude } = req.body;
     try {
         message_logger.info("User data: " + JSON.stringify(req.body));
         const updatedUser = await prisma.user.update({
             where: { id: userId },
-            data: { username, email, password },
+            data: { username, email, password, first_name, last_name, city, country, latitude, longitude},
         });
         user_logger.info("User updated successfully");
         res.json(updatedUser);
@@ -82,4 +69,4 @@ async function deleteUser(req, res) {
     }
 }
 
-module.exports = { createUser, getUsers, getUserById, updateUser, deleteUser };
+module.exports = { createUser, getUserById, updateUser, deleteUser };

@@ -6,9 +6,11 @@ const event_logger = require('../loggers/Loggers').event_logger;
 
 const createEvent = async (req, res) => {
     try {
+
         event_logger.info("Creating a new event");
-        const { title, description, date, userId, sport, latitude, longitude } = req.body;
+        const { title, description, date, userId, sportId, latitude, longitude } = req.body;
         event_logger.info("Event data: " + JSON.stringify(req.body));
+
         const event = await prisma.event.create({
             /*
             {
@@ -27,9 +29,9 @@ const createEvent = async (req, res) => {
                 description,
                 date,
                 userId,
-                sport,
                 latitude,
                 longitude,
+                sportId,
             },
         });
         event_logger.info("Event created successfully");
