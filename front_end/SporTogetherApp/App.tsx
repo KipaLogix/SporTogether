@@ -13,37 +13,9 @@ import Navbar from './components/Navbar';
 import { useAuthContext } from './hooks/useAuthContext';
 
 export default function App() {
-  // let { user } = useAuthContext();
   return (
-
-    <AuthContextProvider>
-      {/* {user} = useAuthContext() */}
-
-      <NativeRouter>
-
-        <Routes>
-          <Route
-            path='/'
-            element={<SignUp />}
-          >
-          </Route>
-
-          {/* <Route
-            path='/'
-            element={user ? <Home /> : <Navigate to='/login' />}
-          />
-          <Route
-            path='/login'
-            element={!user ? <Login /> : <Navigate to='/' />}
-          />
-          <Route
-            path='/register'
-            element={!user ? <SignUp /> : <Navigate to='/' />}
-          /> */}
-
-        </Routes>
-      </NativeRouter>
-    </AuthContextProvider>
-
+   <View >
+    <Text>BAAAAAAAAAAAAAAA</Text>
+    </View>
   );
 }
