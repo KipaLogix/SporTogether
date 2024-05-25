@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { createEvent, getEventsByLocationAndArea } = require('../controllers/EventController');
+const { createEvent, getEventsByLocationAndArea, /*addAllSports*/ } = require('../controllers/EventController');
 
-router.route('/').post(createEvent).get(getEventsByLocationAndArea);
+router.route('/').post(createEvent);
+router.route('/latitude=:latitude/longitude=:longitude/area=:area/:sportId?').get(getEventsByLocationAndArea);
+// router.route('/add').post(addAllSports);
 
 module.exports = router;

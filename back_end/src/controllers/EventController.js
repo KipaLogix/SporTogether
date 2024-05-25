@@ -1,9 +1,16 @@
 const { PrismaClient } = require('@prisma/client');
+
 const prisma = new PrismaClient();
+
+const event_logger = require('../loggers/Loggers').event_logger;
 
 const createEvent = async (req, res) => {
     try {
-        const { title, description, date, userId, sport, latitude, longitude } = req.body;
+
+        event_logger.info("Creating a new event");
+        const { title, description, date, userId, sportId, latitude, longitude } = req.body;
+        event_logger.info("Event data: " + JSON.stringify(req.body));
+
         const event = await prisma.event.create({
             /*
             {
@@ -22,23 +29,27 @@ const createEvent = async (req, res) => {
                 description,
                 date,
                 userId,
-                sport,
                 latitude,
                 longitude,
+                sportId,
             },
         });
+        event_logger.info("Event created successfully");
         res.status(201).json(event);
     } catch (error) {
-        console.error(error);
+        event_logger.error("Error creating event: " + error);
         res.status(500).json({ error: 'Failed to create event' });
     }
 };
 
+//http://localhost:3000/api/events/latitude=46.770439/longitude=23.591423/area=150/346985fb-0199-4e96-80e9-dddfad6d9483
 const getEventsByLocationAndArea = async (req, res) => {
     try {
-        
-        const { latitude, longitude, area, sport } = req.query;
-        console.log(req.query)
+
+        const { latitude, longitude, area, sportId } = req.params;
+
+        event_logger.info("Fetching events by location and area");
+
 
         // Calculate the area in degrees based on the given area in kilometers
         const areaInDegrees = 0.0144927536231884 * parseFloat(area);
@@ -62,12 +73,11 @@ const getEventsByLocationAndArea = async (req, res) => {
             },
         };
 
-        if (sport != null) {
-            whereClause.sport = {
-                has: sport,
-            };
+        if (sportId != null) {
+            whereClause.sportId = sportId;
         }
 
+        event_logger.info("Event data: " + JSON.stringify(req.body));
         /*
         {
             "latitude": 46.756658,
@@ -76,17 +86,45 @@ const getEventsByLocationAndArea = async (req, res) => {
             "sport": "VOLLEYBALL" or null to get all sports
         }
         */
-       console.log(whereClause)
+        console.log(whereClause)
 
         const events = await prisma.event.findMany({
             where: whereClause,
         });
 
+        event_logger.info("Events fetched successfully");
         res.status(200).json(events);
     } catch (error) {
-        console.error(error);
+        event_logger.error("Error fetching events: " + error);
         res.status(500).json({ error: 'Failed to get events by location and area' });
     }
 };
 
-module.exports = { createEvent, getEventsByLocationAndArea }
+// const addAllSports = async (req, res) => {
+
+//     const sports = [
+//         'FOOTBALL', 'BASKETBALL', 'TENNIS', 'VOLLEYBALL', 'HANDBALL', 'RUGBY',
+//         'SWIMMING', 'RUNNING', 'CYCLING', 'GOLF', 'BOXING', 'MARTIAL_ARTS',
+//         'YOGA', 'DANCE', 'FITNESS', 'GYMNASTICS', 'SKIING', 'SNOWBOARDING',
+//         'ICE_SKATING', 'ICE_HOCKEY', 'CURLING', 'SQUASH', 'BADMINTON',
+//         'TABLE_TENNIS', 'BILLIARDS', 'DARTS', 'CHESS', 'POKER', 'BRIDGE',
+//         'BACKGAMMON', 'VIDEO_GAMES', 'BOARD_GAMES', 'CARD_GAMES', 'OTHER'
+//     ];
+
+//     try {
+//         for (const sport of sports) {
+//             await prisma.sport.create({
+//                 data: {
+//                     sport: sport,
+//                 },
+//             });
+//         }
+
+//         res.status(201).json(sports);
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ error: 'Failed to create sport' });
+//     }
+// };
+
+module.exports = { createEvent, getEventsByLocationAndArea, /*addAllSports*/ }
