@@ -3,7 +3,7 @@ const prisma = new PrismaClient();
 
 const createEvent = async (req, res) => {
     try {
-        const { title, description, date, userId, sport, latitude, longitude } = req.body;
+        const { title, description, date, userId, sportId, latitude, longitude } = req.body;
         const event = await prisma.event.create({
             /*
             {
@@ -22,9 +22,9 @@ const createEvent = async (req, res) => {
                 description,
                 date,
                 userId,
-                sport,
                 latitude,
                 longitude,
+                sportId,
             },
         });
         res.status(201).json(event);
