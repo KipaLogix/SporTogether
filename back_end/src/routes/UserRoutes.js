@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const { createUser, getUsers, getUserById, updateUser, deleteUser, loginUser, registerUser } = require('../controllers/UserController');
-// const requireAuth = require('../middleware/requireAuth');
+const requireAuth = require('../middleware/requireAuth');
 
-// router.use(requireAuth);
+router.use(requireAuth);
 
 
 router.route('/').post(createUser).get(getUsers);
