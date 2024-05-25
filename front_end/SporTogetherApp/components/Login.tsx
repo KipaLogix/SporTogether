@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { View } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
-import { StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { PaperProvider, Text } from 'react-native-paper';
 
 const Login = () => {
