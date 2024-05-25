@@ -1,4 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
+
 const prisma = new PrismaClient();
 const bcrypt = require('bcrypt');
 const validator = require('validator');
@@ -11,6 +12,7 @@ const createToken = (id) => {
 
 const ENCRYPTION_SALT = 10;
 
+const user_logger = require('../loggers/Loggers').user_logger;
 
 async function createUser(username, email, password) {
     if (!username || !email || !password) {
@@ -40,7 +42,6 @@ async function createUser(username, email, password) {
         throw Error('Username already in use');
     }
 
-
     try {
         const hashedPassword = await bcrypt.hash(password, ENCRYPTION_SALT);
 
@@ -55,49 +56,50 @@ async function createUser(username, email, password) {
     }
 }
 
-async function getUsers(req, res) {
-    try {
-        const users = await prisma.user.findMany();
-        res.json(users);
-    } catch (error) {
-        res.status(500).json({ error: 'Error fetching users' });
-    }
-
-}
-
 async function getUserById(req, res) {
+    user_logger.info("Fetching user by ID");
     const userId = req.params.id;
     try {
         const user = await prisma.user.findUnique({ where: { id: userId } });
+        user_logger.info("User fetched successfully");
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
+        user_logger.info("User data: " + JSON.stringify(user));
         res.json(user);
     } catch (error) {
+        user_logger.error("Error fetching user: " + error);
         res.status(500).json({ error: 'Error fetching user' });
     }
 }
 
 async function updateUser(req, res) {
+    user_logger.info("Updating user");
     const userId = req.params.id;
-    const { username, email, password } = req.body;
+    const { username, email, password, first_name, last_name, city, country, latitude, longitude } = req.body;
     try {
+        message_logger.info("User data: " + JSON.stringify(req.body));
         const updatedUser = await prisma.user.update({
             where: { id: userId },
-            data: { username, email, password },
+            data: { username, email, password, first_name, last_name, city, country, latitude, longitude},
         });
+        user_logger.info("User updated successfully");
         res.json(updatedUser);
     } catch (error) {
+        user_logger.error("Error updating user: " + error);
         res.status(500).json({ error: 'Error updating user' });
     }
 }
 
 async function deleteUser(req, res) {
+    user_logger.info("Deleting user");
     const userId = req.params.id;
     try {
         await prisma.user.delete({ where: { id: userId } });
+        user_logger.info("User deleted successfully");
         res.json({ message: 'User deleted successfully' });
     } catch (error) {
+        user_logger.error("Error deleting user: " + error);
         res.status(500).json({ error: 'Error deleting user' });
     }
 }
@@ -164,3 +166,4 @@ async function registerUser(req, res) {
 
 
 module.exports = { createUser, getUsers, getUserById, updateUser, deleteUser, loginUser, registerUser };
+
