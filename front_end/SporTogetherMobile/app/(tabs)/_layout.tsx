@@ -13,7 +13,7 @@ const Layout = () => {
         fontFamily: 'SpaceMono',
       }
     }}>
-        <Tabs.Screen name="Index" options={{
+        {/* <Tabs.Screen name="Index" options={{
           tabBarLabel: 'Explore',
           tabBarIcon: ({color, size}) =>
             <Ionicons name='search' color={color} size={size}/>
@@ -32,7 +32,7 @@ const Layout = () => {
           tabBarLabel: 'Profile',
           tabBarIcon: ({color, size}) =>
             <Ionicons name='person' color={color} size={size}/>
-        }} />
+        }} /> */}
     </Tabs>
   );
 };

@@ -6,9 +6,10 @@ import {Link} from "expo-router"
 const Index = () => {
   return (
     <View>
+      Page
         {/* <Link href={"/(modals)/login"}> Login </Link> */}
-        <Link href={"/(modals)/Booking"}> Booking </Link>
-        <Link href={"/event/1337"}> Event details </Link>
+        {/* <Link href={"/(modals)/Booking"}> Booking </Link>
+        <Link href={"/event/1337"}> Event details </Link> */}
     </View>
   );
 };

@@ -3,12 +3,10 @@ import { SplashScreen, Stack, useRouter } from 'expo-router';
 import { useEffect } from 'react';
 import {useFonts} from 'expo-font';
 import React from 'react';
-import { TouchableOpacity, Button } from 'react-native';
+import { TouchableOpacity} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import {AuthProvider, useAuth} from './context/AuthContext';
-import Home from './Home';
-import Login from './(auth)/Login';
-import Register from './(auth)/Register';
+import {useAuth} from './context/AuthContext';
+
 
 
 export {
@@ -16,7 +14,7 @@ export {
   }  from 'expo-router';
 
 export const unstable_settings = {
-  initialRouteName: '(auth)/Login',
+  initialRouteName: '(tabs)',
 };
 
 SplashScreen.preventAutoHideAsync();
@@ -39,42 +37,44 @@ export default function RootLayout() {
     return null;
   }
 
-  return (<AuthProvider>
-            <RootLayoutNav />
-          </AuthProvider> ); 
+  return  <RootLayoutNav />;
+
 }
 
 function RootLayoutNav() {
   const router = useRouter();
   const { authState, onLogout } = useAuth();
 
+  useEffect(() => {
+    if (!authState?.authenticated) {
+      router.navigate('(auth)/Login');
+    }
+  }, [authState?.authenticated, router])
 
   return (
-    <PaperProvider>
-      <Stack>
-        {/* <Stack.Screen name="(tabs)" options={{headerShown: false}}/>
+          <PaperProvider>
+          <Stack>
 
-        <Stack.Screen name="event/[id]" options={{ headerTitle: ''}}/>
-        <Stack.Screen name="(modals)/Booking" 
-        options={{
-          presentation: 'transparentModal',
-          animation: 'fade',
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => router.back()}>
-              <Ionicons name='close-outline' size={28}/>
-            </TouchableOpacity>
-          ),
-        }}/> */}
+            <Stack.Screen name="(tabs)" options={{headerShown: false}}/>
+            <Stack.Screen name="(auth)/Login" />
+
+              <Stack.Screen name="(auth)/Register"/>
+            <Stack.Screen name="event/[id]" options={{ headerTitle: ''}}/>
+            <Stack.Screen name="(modals)/Booking" 
+            options={{
+              presentation: 'transparentModal',
+              animation: 'fade',
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => router.back()}>
+                  <Ionicons name='close-outline' size={28}/>
+                </TouchableOpacity>
+              ),
+            }}/>  
 
 
 
-        {authState?.authenticated ? (
+        {/* {authState?.authenticated ? (
           <>
-            {/* <Stack.Screen name="Home"  options={{
-              headerRight: () => <Button onPress={onLogout} title="Sign Out" />,
-            }} /> */}
-            
-
 
             <Stack.Screen name="(tabs)" options={{headerShown: false}}/>
 
@@ -96,18 +96,16 @@ function RootLayoutNav() {
           </>
         ) : (
           <>
-            {/* <Stack.Screen name="(auth)/Login" component={Login} />
-            <Stack.Screen name="(auth)/Register" component={Register} /> */}
             <Stack.Screen name="(auth)/Login" />
             <Stack.Screen name="(auth)/Register"/>
           </>
         )}
+ */}
 
 
 
 
-
-      </Stack>
-    </PaperProvider>
+        </Stack>
+      </PaperProvider>
   );
 }
