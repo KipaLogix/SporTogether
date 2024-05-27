@@ -37,6 +37,7 @@ ios/*.xcodeproj
 android/.gradle
 android/build/
 android/app/build/
+android/
 *.keystore
 *.iml
 *.hprof

@@ -4,12 +4,12 @@ import { useFonts } from 'expo-font';
 import { useColorScheme } from 'react-native';
 import { AuthProvider, useAuth } from '../context/AuthContext';
 
+SplashScreen.preventAutoHideAsync();
 
 const InitialLayout = () => {
   const { authState, onLogout } = useAuth();
   const segments = useSegments();
   const router = useRouter();
-
 
   useEffect(() => {
     console.log('authState', authState?.token);
@@ -27,18 +27,25 @@ const InitialLayout = () => {
   return <Slot/>
 }
 
-const  RootLayoutNav = () => {
-
-
-  const [loaded, error] = useFonts({
-      SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-    });
-
-    useEffect(() => {
-      if (error) throw error;
-    }, [error]);
+const RootLayoutNav = () => {
 
   const colorScheme = useColorScheme();
+  const [loaded, error] = useFonts({
+    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+  });
+
+  useEffect(() => {
+    if (error) throw error;
+  }, [error]);
+
+  useEffect(() => {
+      if (loaded){ SplashScreen.hideAsync();
+    }
+  }, [loaded]);
+
+  if(!loaded) {
+    return null;
+  }
 
   return (
     <AuthProvider>
@@ -47,6 +54,5 @@ const  RootLayoutNav = () => {
       
   );
 }
-
 
 export default RootLayoutNav;

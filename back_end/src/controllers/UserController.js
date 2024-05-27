@@ -49,7 +49,6 @@ async function createUser(username, email, password) {
         const newUser = await prisma.user.create({
             data: { username, email, password: hashedPassword },
         });
-
         return newUser;
     } catch (error) {
         throw Error('Error creating user')

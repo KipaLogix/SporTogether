@@ -35,7 +35,7 @@ const EventsMap = ({events, location} : Props) => {
                         }>
                             <View style={styles.marker}>
                                 <Text style={styles.markerText}>
-                                    {/* {item.sport.} */}
+                                    {item.title}
                                 </Text>
                             </View>
                         </Marker>
