@@ -28,16 +28,19 @@ const Layout = () => {
     }}>
         <Tabs.Screen name="explore" options={{
           tabBarLabel: 'Explore',
+          headerTitle: 'Explore',
           tabBarIcon: ({color, size}) =>
             <Ionicons name='search' color={color} size={size}/>
         }} />
         <Tabs.Screen name="myevents" options={{
           tabBarLabel: 'My Events',
+          headerTitle: 'My Events',
           tabBarIcon: ({color, size}) =>
             <Ionicons name='football' color={color} size={size}/>
         }} />
         <Tabs.Screen name="messages" options={{
           tabBarLabel: 'Messages',
+          headerTitle: 'Messages',
           tabBarIcon: ({color, size}) =>
             <Ionicons name='chatbubbles' color={color} size={size}/>
         }} />
