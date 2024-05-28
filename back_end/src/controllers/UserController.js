@@ -15,11 +15,15 @@ const ENCRYPTION_SALT = 10;
 const user_logger = require('../loggers/Loggers').user_logger;
 
 async function createUser(username, email, password) {
+    user_logger.info("Creating user");
+
     if (!username || !email || !password) {
+        user_logger.error("All fields must be filled!");
         throw Error('All fields must be filled!');
     }
 
     if (!validator.isEmail(email)) {
+        user_logger.error("Invalid Email");
         throw Error('Invalid Email');
     }
 
@@ -30,6 +34,7 @@ async function createUser(username, email, password) {
         },
     });
     if (emailExists) {
+        user_logger.error("Email already in use");
         throw Error('Email already in use');
     }
 
@@ -39,6 +44,7 @@ async function createUser(username, email, password) {
         },
     });
     if (usernameExists) {
+        user_logger.error("Username already in use");
         throw Error('Username already in use');
     }
 
@@ -49,6 +55,9 @@ async function createUser(username, email, password) {
         const newUser = await prisma.user.create({
             data: { username, email, password: hashedPassword },
         });
+        
+        user_logger.info("User data: " + JSON.stringify(newUser));
+        user_logger.info("User created successfully");
         return newUser;
     } catch (error) {
         throw Error('Error creating user')
@@ -64,6 +73,7 @@ async function getUserById(req, res) {
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
+
         user_logger.info("User data: " + JSON.stringify(user));
         res.json(user);
     } catch (error) {
@@ -82,6 +92,7 @@ async function updateUser(req, res) {
             where: { id: userId },
             data: { username, email, password, first_name, last_name, city, country, latitude, longitude},
         });
+
         user_logger.info("User updated successfully");
         res.json(updatedUser);
     } catch (error) {
@@ -95,6 +106,7 @@ async function deleteUser(req, res) {
     const userId = req.params.id;
     try {
         await prisma.user.delete({ where: { id: userId } });
+
         user_logger.info("User deleted successfully");
         res.json({ message: 'User deleted successfully' });
     } catch (error) {
@@ -104,7 +116,9 @@ async function deleteUser(req, res) {
 }
 
 async function getUserByCredentials(email, password) {
+    user_logger.info("Getting user by credentials");
     if (!email || !password) {
+        user_logger.error("All fields must be filled!");
         throw Error('All fields must be filled!');
     }
 
@@ -114,6 +128,7 @@ async function getUserByCredentials(email, password) {
             email,
         },
     });
+
     if (!user) {
         //Try to login by username
         const username = email;
@@ -123,27 +138,37 @@ async function getUserByCredentials(email, password) {
             },
         });
         if (!user) {
+            user_logger.error("Wrong credentials");
             throw Error('Wrong credentials');
         }
     }
 
+    user_logger.info("User data: " + JSON.stringify(user));
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
+        user_logger.error("Wrong credentials");
         throw Error('Wrong credentials');
     }
+
+    user_logger.info("User fetched successfully");
     return user;
 }
 
 
 //login user
 async function loginUser(req, res) {
+    user_logger.info("Logging in user");
     const { email, password } = req.body;
     try {
         const user = await getUserByCredentials(email, password);
+        user_logger.info("User data: " + JSON.stringify(user));
         // create token
         const token = createToken(user.id);
+
+        user_logger.info("User logged in successfully");
         res.status(201).json({ token, user });
     } catch (e) {
+        user_logger.error("Error logging in user: " + e);
         res.status(400).json({ error: e.message });
     }
 
@@ -151,14 +176,18 @@ async function loginUser(req, res) {
 
 //register user
 async function registerUser(req, res) {
+    user_logger.info("Registering user");
     const { username, email, password } = req.body;
     try {
         const newUser = await createUser(username, email, password);
+        user_logger.info("User data: " + JSON.stringify(newUser));
         // create token
         const token = createToken(newUser.id);
 
+        user_logger.info("User registered successfully");
         res.status(201).json({ token });
     } catch (e) {
+        user_logger.error("Error registering user: " + e);
         res.status(400).json({ error: e.message });
     }
 }
