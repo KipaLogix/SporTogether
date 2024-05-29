@@ -18,7 +18,7 @@ const createEvent = async (req, res) => {
                 "description": "Join us for a thrilling volleyball match!",
                 "date": "2024-04-23T15:00:00.000Z",
                 "userId": "aa11a175-1d2c-45ae-b9c5-c857476c00b3",
-                "sport": ["VOLLEYBALL"],
+                "sportId": "UUID....",
                 "latitude": 46.756658,
                 "longitude": 23.563747
             }
@@ -44,6 +44,7 @@ const createEvent = async (req, res) => {
 
 //http://localhost:3000/api/events/latitude=46.770439/longitude=23.591423/area=150/346985fb-0199-4e96-80e9-dddfad6d9483
 const getEventsByLocationAndArea = async (req, res) => {
+    console.log("intra");
     try {
 
         const { latitude, longitude, area, sportId } = req.params;
@@ -83,7 +84,7 @@ const getEventsByLocationAndArea = async (req, res) => {
             "latitude": 46.756658,
             "longitude": 23.563747,
             "area": 10, <-- 10 km
-            "sport": "VOLLEYBALL" or null to get all sports
+            "sportId": "UUID..." or null to get all sports
         }
         */
         console.log(whereClause)
