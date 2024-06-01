@@ -5,7 +5,8 @@ import { FAB, Icon } from 'react-native-elements';
 import * as Animatable from 'react-native-animatable';
 import { useAuth } from '../../context/AuthContext';
 import { getPermissionAndLocation } from '../../service/utils/LocationService';
-import { getSports, createEvent } from '../../service/api/EventService';
+import { createEvent } from '../../service/api/EventService';
+import { getSports } from '../../service/api/SportService';
 import { Sport } from '../../interfaces/Sport';
 
 

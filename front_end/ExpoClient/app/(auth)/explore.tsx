@@ -48,13 +48,14 @@ const explore = () => {
 
   return (
     <PaperProvider>
-      {/* <EventsMap events={events} location={location} /> */}
-      <View style={{ flex: 1, marginTop: 130 }}>
+      <View style={{ flex: 1 , marginTop: 20}}>
         <Stack.Screen
           options={{
             header: () => <ExploreHeader onCategoryChanged={onDataChanged} />,
           }}
         />
+        <EventsMap events={events} location={location} />
+
       </View>
     </PaperProvider>
   );

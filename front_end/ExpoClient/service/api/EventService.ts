@@ -32,13 +32,3 @@ export const createEvent = async (event: Event): Promise<Event> => {
         throw error;
     }
 }
-
-export const getSports = async (): Promise<Sport[]> => {
-    return await axios.get(`${EVENT_BASE_URL}/sports`)
-        .then((response) => {
-            return response.data as Sport[];
-        }).catch((error) => {
-            console.error('Error fetching sports: ', error);
-            throw error;
-        });
-}
