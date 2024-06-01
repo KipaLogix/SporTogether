@@ -1,5 +1,5 @@
 export interface Sport {
-    id: string;
+  id: string;
   sport: string;
-  Events: Event[];
+  icon: string;
 }
