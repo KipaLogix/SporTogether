@@ -47,12 +47,6 @@ const ExploreHeader = ({ onSportChanged, sports }: Props) => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     };
 
-    useEffect(() => {
-        getSports().then((Sports: Sport[]) => {
-            sports = Sports;
-        });
-    }, []);
-
     return (
         <SafeAreaView style={{ backgroundColor: '#fff', height: 100 }}>
             <View style={styles.container}>
