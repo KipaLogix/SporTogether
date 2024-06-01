@@ -2,11 +2,12 @@ import * as React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import { useEffect, useState } from 'react';
 import { PaperProvider } from 'react-native-paper';
-import EventsMap from '../../components/EventsMap';
-import { Event } from '../../interfaces/Event';
-import { getEventsByLocation } from '../../service/api/EventService';
-import { getPermissionAndLocation } from '../../service/utils/LocationService';
-import { useAuth } from '../../context/AuthContext';
+import EventsMap from '../../../components/EventsMap';
+import { Event } from '../../../interfaces/Event';
+import { getEventsByLocation } from '../../../service/api/EventService';
+import { getPermissionAndLocation } from '../../../service/utils/LocationService';
+import { useAuth } from '../../../context/AuthContext';
+import EventsList from '../../../components/EventsList';
 
 const explore = () => {
 
@@ -39,32 +40,9 @@ const explore = () => {
 
   return (
     <PaperProvider>
-      <EventsMap events={events} location={location} />
+      <EventsList events={events} sportCategoryId="" />
+      {/* <EventsMap events={events} location={location} /> */}
     </PaperProvider>
-  );
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  return (
-    <View>
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Explore</Text>
-      </View>
-      {/* <Link href={"/(modals)/login"}> Login </Link> */}
-      {/* <Link href={"/(modals)/Booking"}> Booking </Link>
-        <Link href={"/event/1337"}> Event details </Link> */}
-    </View>
   );
 };
 
