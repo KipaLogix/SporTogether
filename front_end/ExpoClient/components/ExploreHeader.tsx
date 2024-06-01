@@ -1,7 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { GestureHandlerRootView, ScrollView } from 'react-native-gesture-handler';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 
@@ -31,53 +29,52 @@ const ExploreHeader = ({ onCategoryChanged }: Props) => {
     };
 
     return (
-        <GestureHandlerRootView style={{ flex: 1 }}>
-            <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-                <View style={styles.container}>
-                    <View style={styles.actionRow}>
-                        <Text style={styles.title}>EXPLORE</Text>
-                    </View>
-                    <ScrollView
-                        horizontal
-                        showsHorizontalScrollIndicator={true}
-                        contentContainerStyle={styles.scrollViewContent}
-                    >
-                        {categories.map((category, index) => (
-                            <TouchableOpacity key={index}
-                                onPress={() => selectCategory(index)}
-                                style={activeIndex == index ? styles.categoriesBtnActive : styles.categoriesBtn}
-                                ref={(el) => itemsRef.current[index] = el}
-                            >
-                                <MaterialCommunityIcons size={25} name={category.icon as any}
-                                    color={activeIndex == index ? '#000' : Colors.grey}
-                                // style={activeIndex == index ? styles.categoryTextActive : styles.categoryText}
-                                />
-                                <Text style={styles.categoryText}>{category.name}</Text>
-                            </TouchableOpacity>
-                        ))}
-                    </ScrollView>
+        <SafeAreaView style={{ backgroundColor: '#fff', height: 100 }}>
+            <View style={styles.container}>
+                <View style={styles.actionRow}>
+                    <Text style={styles.title}>EXPLORE</Text>
                 </View>
-            </SafeAreaView>
-        </GestureHandlerRootView>
+                <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={true}
+                    contentContainerStyle={styles.scrollViewContent}
+                >
+                    {categories.map((category, index) => (
+                        <TouchableOpacity key={index}
+                            onPress={() => selectCategory(index)}
+                            style={activeIndex == index ? styles.categoriesBtnActive : styles.categoriesBtn}
+                            ref={(el) => itemsRef.current[index] = el}
+                        >
+                            <MaterialCommunityIcons size={25} name={category.icon as any}
+                                color={activeIndex == index ? '#000' : Colors.grey}
+                            />
+                            <Text style={styles.categoryText}>{category.name}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </ScrollView>
+            </View>
+        </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#fff',
-        height: 100,
+        height: 121,
     },
     actionRow: {
         flexDirection: 'row',
-        height: 48,
+        height: 50,
         alignItems: 'center',
         justifyContent: 'center',
     },
     title: {
+        paddingTop: 28,
         fontSize: 18,
         fontWeight: 'bold',
     },
     scrollViewContent: {
+        paddingTop: 20,
         alignItems: 'center',
         paddingHorizontal: 16,
         gap: 22,
