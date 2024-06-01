@@ -1,4 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
+const e = require('express');
 
 const prisma = new PrismaClient();
 
@@ -128,4 +129,18 @@ const getEventsByLocationAndArea = async (req, res) => {
 //     }
 // };
 
-module.exports = { createEvent, getEventsByLocationAndArea, /*addAllSports*/ }
+const getSports = async (req, res) => {
+    try {
+        event_logger.info("Fetching sports");
+        event_logger.info("Sports data: " + JSON.stringify(req.body));
+        const sports = await prisma.sport.findMany();
+
+        res.status(200).json(sports);
+        event_logger.info("Sports fetched successfully");
+    } catch (error) {
+        event_logger.error("Error fetching sports: " + error);
+        res.status(500).json({ error: 'Failed to get sports' });
+    }
+}
+
+module.exports = { createEvent, getEventsByLocationAndArea, getSports /*addAllSports*/ }
