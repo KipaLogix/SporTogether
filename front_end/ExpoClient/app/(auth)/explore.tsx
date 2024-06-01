@@ -9,7 +9,6 @@ import { getPermissionAndLocation } from '../../service/utils/LocationService';
 import { useAuth } from '../../context/AuthContext';
 import { Stack } from 'expo-router';
 import ExploreHeader from '../../components/ExploreHeader';
-import Listings from '../../components/Listings';
 
 const explore = () => {
 
@@ -55,7 +54,6 @@ const explore = () => {
             header: () => <ExploreHeader onCategoryChanged={onDataChanged} />,
           }}
         />
-        <Listings listings={[]} category={category} />
       </View>
     </PaperProvider>
   );
