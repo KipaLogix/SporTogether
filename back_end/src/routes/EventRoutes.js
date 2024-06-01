@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { createEvent, getEventsByLocationAndArea, /*addAllSports*/ } = require('../controllers/EventController');
+const { createEvent, getEventsByLocationAndArea, /* addAllSports */ } = require('../controllers/EventController');
 
 const requireAuth = require('../middleware/requireAuth');
 

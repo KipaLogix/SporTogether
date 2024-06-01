@@ -9,7 +9,6 @@ import { getPermissionAndLocation } from '../../service/utils/LocationService';
 import { useAuth } from '../../context/AuthContext';
 
 const explore = () => {
-
   const [location, setLocation] = useState<{
     latitude: number;
     longitude: number;
@@ -33,6 +32,8 @@ const explore = () => {
     if (location) {
       getEventsByLocation(location.latitude, location.longitude).then((resp) => {
         setEvents(resp);
+      }).catch((err) => {
+        alert(err);
       });
     }
   }, [location]);

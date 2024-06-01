@@ -128,4 +128,4 @@ const getEventsByLocationAndArea = async (req, res) => {
 //     }
 // };
 
-module.exports = { createEvent, getEventsByLocationAndArea, /*addAllSports*/ }
+module.exports = { createEvent, getEventsByLocationAndArea, /* addAllSports */ }

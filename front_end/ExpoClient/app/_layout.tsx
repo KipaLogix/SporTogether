@@ -12,13 +12,14 @@ const InitialLayout = () => {
   const router = useRouter();
 
   useEffect(() => {
-    console.log('authState', authState?.token);
 
     const inTabsGroup = segments[0] === '(auth)';
 
     if (authState?.authenticated && !inTabsGroup) {
+      console.log("SE Crede authentificat");
       router.replace('/explore');      
     } else if (!authState?.authenticated) {
+      console.log("NU SE CREDE AUTENTIFICAT")
       router.replace('/login');
     }
 

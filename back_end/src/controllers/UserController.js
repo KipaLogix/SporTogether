@@ -4,10 +4,9 @@ const prisma = new PrismaClient();
 const bcrypt = require('bcrypt');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
-const { resolveTypeReferenceDirective } = require('typescript');
 
 const createToken = (id) => {
-    return jwt.sign({ id }, process.env.SECRET, { expiresIn: '1h' });
+    return jwt.sign({ id }, process.env.SECRET, { expiresIn: '1d' });
 }
 
 const ENCRYPTION_SALT = 10;
@@ -163,10 +162,10 @@ async function loginUser(req, res) {
         const user = await getUserByCredentials(email, password);
         user_logger.info("User data: " + JSON.stringify(user));
         // create token
-        const token = createToken(user.id);
+        const token = createToken({...user, password: null});
 
         user_logger.info("User logged in successfully");
-        res.status(201).json({ token, user });
+        res.status(201).json({ token });
     } catch (e) {
         user_logger.error("Error logging in user: " + e);
         res.status(400).json({ error: e.message });
@@ -182,7 +181,7 @@ async function registerUser(req, res) {
         const newUser = await createUser(username, email, password);
         user_logger.info("User data: " + JSON.stringify(newUser));
         // create token
-        const token = createToken(newUser.id);
+        const token = createToken({...newUser, password: null});
 
         user_logger.info("User registered successfully");
         res.status(201).json({ token });

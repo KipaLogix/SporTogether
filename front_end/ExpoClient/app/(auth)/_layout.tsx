@@ -31,7 +31,7 @@ const Layout = () => {
           headerTitle: 'Explore',
           tabBarIcon: ({color, size}) =>
             <Ionicons name='search' color={color} size={size}/>
-        }} />
+        }}/>
         <Tabs.Screen name="myevents" options={{
           tabBarLabel: 'My Events',
           headerTitle: 'My Events',
@@ -43,7 +43,7 @@ const Layout = () => {
           headerTitle: 'Messages',
           tabBarIcon: ({color, size}) =>
             <Ionicons name='chatbubbles' color={color} size={size}/>
-        }} />
+        }}/>
 
         <Tabs.Screen name="profile"options={{
           headerTitle: 'My Profile',
