@@ -1,12 +1,15 @@
 import * as React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import { useEffect, useState } from 'react';
-import { PaperProvider } from 'react-native-paper';
+import { List, PaperProvider } from 'react-native-paper';
 import EventsMap from '../../components/EventsMap';
 import { Event } from '../../interfaces/Event';
 import { getEventsByLocation } from '../../service/api/EventService';
 import { getPermissionAndLocation } from '../../service/utils/LocationService';
 import { useAuth } from '../../context/AuthContext';
+import { Stack } from 'expo-router';
+import ExploreHeader from '../../components/ExploreHeader';
+import Listings from '../../components/Listings';
 
 const explore = () => {
 
@@ -18,11 +21,13 @@ const explore = () => {
   } | null>(null);
   const [events, setEvents] = useState<Event[]>([]);
 
+  const [category, setCategory] = useState<string>('');
+
   useEffect(() => {
     getPermissionAndLocation().then((loc) => {
       setLocation({
         latitude: loc?.coords?.latitude ?? useAuth().authState?.user?.latitude ?? 0,
-        longitude:  loc?.coords?.longitude ?? useAuth().authState?.user?.longitude ?? 0,
+        longitude: loc?.coords?.longitude ?? useAuth().authState?.user?.longitude ?? 0,
         latitudeDelta: 0.01,
         longitudeDelta: 0.01,
       });
@@ -37,9 +42,21 @@ const explore = () => {
     }
   }, [location]);
 
+  const onDataChanged = (category: string) => {
+    setCategory(category);
+  }
+
   return (
     <PaperProvider>
-      <EventsMap events={events} location={location} />
+      {/* <EventsMap events={events} location={location} /> */}
+      <View style={{ flex: 1, marginTop: 130 }}>
+        <Stack.Screen
+          options={{
+            header: () => <ExploreHeader onCategoryChanged={onDataChanged} />,
+          }}
+        />
+        <Listings listings={[]} category={category} />
+      </View>
     </PaperProvider>
   );
 
