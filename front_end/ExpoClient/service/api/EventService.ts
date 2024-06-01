@@ -22,3 +22,13 @@ export const createEvent = async (event: Event): Promise<Event> => {
         throw error;
     }
 }
+
+export const getEventById = async (id: string): Promise<Event> => {
+    try {
+        const response = await axios.get(`${EVENT_BASE_URL}/${id}`);
+        return await response.data;
+    } catch (error) {
+        console.error('Error fetching event by id: ', error);
+        throw error;
+    }
+}
