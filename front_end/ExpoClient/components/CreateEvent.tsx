@@ -19,14 +19,12 @@ interface Props {
 const CreateEvent = ({ isVisible, onClose, onCreate, sports, userId, userLocation }: Props) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState<Date | null>(null);
   const [sportId, setSportId] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
-  const [time, setTime] = useState(new Date());
   const [locationSet, setLocationSet] = useState(false);
   const defaultLocation = { latitude: 0, longitude: 0 };
-  const [selectedDate, setSelectedDate] = useState(new Date());
   const [markerLocation, setMarkerLocation] = useState(userLocation || defaultLocation);
 
   const handleCreatePress = () => {
@@ -61,16 +59,22 @@ const CreateEvent = ({ isVisible, onClose, onCreate, sports, userId, userLocatio
         </TouchableOpacity>
         <TextInput style={styles.input} placeholder="Title" value={title} onChangeText={setTitle} />
         <TextInput style={styles.input} placeholder="Description" value={description} onChangeText={setDescription} />
-        <Button title="Select Date" onPress={() => setShowDatePicker(true)} />
-        <Text style={styles.dateTime}>{selectedDate.toLocaleDateString()} {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })} </Text>
+        <Text style={styles.dateTime} onPress={() => setShowDatePicker(true)} >
+          {date !== null
+            ? `${date.toLocaleDateString()} ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}` 
+            : 'Select Date & Time'}
+        </Text>
         {showDatePicker && (
           <DateTimePicker 
-            value={date}
-            mode="date" 
-            onChange={(_event, selectedDate) => {
-              const currentDate = selectedDate || date;
+            value={date || new Date()}
+            mode="date"
+            onChange={(event, selected) => {
+              if (event.type === 'dismissed') {
+                setShowDatePicker(false);
+                return;
+              }
+              const currentDate = selected || date;
               setDate(currentDate);
-              setSelectedDate(currentDate);
               setShowDatePicker(false);
               setShowTimePicker(true);
             }} 
@@ -78,11 +82,16 @@ const CreateEvent = ({ isVisible, onClose, onCreate, sports, userId, userLocatio
         )}
         {showTimePicker && (
           <DateTimePicker 
-            value={time} 
+            value={date || new Date()} 
             mode="time"
-            onChange={(_event, selectedTime) => {
-              const currentTime = selectedTime || time;
-              setTime(currentTime);
+            onChange={(event, selectedTime) => {
+              if (event.type === 'dismissed') {
+                setShowTimePicker(false);
+                setShowDatePicker(false);
+                return;
+              }
+              const currentTime = selectedTime || date;
+              setDate(currentTime);
               setShowTimePicker(false);
             }} 
           />
