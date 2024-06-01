@@ -11,9 +11,9 @@ interface Params {
     longitude: number;
     latitude: number;
     userId: string;
-  }
+}
 
-export const getEventsByLocation = async (latitude: number, longitude: number, area: number = 160, sport: string | null = null): Promise<Event[]> => {
+export const getEventsByLocation = async (latitude: number, longitude: number, sport: string | null = null, area: number = 160): Promise<Event[]> => {
     return await axios.get(`${EVENT_BASE_URL}/latitude=${latitude}/longitude=${longitude}/area=${area}/${sport ? `${sport}` : ''}`)
         .then((response) => {
             return response.data as Event[];

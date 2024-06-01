@@ -5,13 +5,15 @@ import Colors from '../constants/Colors';
 import * as Haptics from 'expo-haptics';
 import { getSports } from '../service/api/SportService';
 import { Sport } from '../interfaces/Sport';
+import { on } from 'events';
 
 interface Props {
-    onCategoryChanged: (category: string) => void;
+    onSportChanged: (category: string) => void;
+    sports: Sport[];
 }
 
-const ExploreHeader = ({ onCategoryChanged }: Props) => {
-    const [sports, setSports] = useState<Sport[]>([]);
+const ExploreHeader = ({ onSportChanged, sports }: Props) => {
+    // const [sports, setSports] = useState<Sport[]>([]);
     const itemsRef = useRef<Array<TouchableOpacity | null>>([]);
     const [activeIndex, setActiveIndex] = useState<string>('');
 
@@ -36,17 +38,18 @@ const ExploreHeader = ({ onCategoryChanged }: Props) => {
     const selectCategory = (index: string) => {
         if (activeIndex === index) {
             setActiveIndex('');
+            onSportChanged('');
         } else {
             setActiveIndex(index);
+            onSportChanged(sports.find((sport) => sport.id === index)!.id);
         }
 
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        onCategoryChanged(sports.find((sport) => sport.id === index)?.sport || '');
     };
 
     useEffect(() => {
         getSports().then((Sports: Sport[]) => {
-            setSports(Sports);
+            sports = Sports;
         });
     }, []);
 
