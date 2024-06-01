@@ -101,31 +101,54 @@ const getEventsByLocationAndArea = async (req, res) => {
     }
 };
 
-// const addAllSports = async (req, res) => {
 
-//     const sports = [
-//         'FOOTBALL', 'BASKETBALL', 'TENNIS', 'VOLLEYBALL', 'HANDBALL', 'RUGBY',
-//         'SWIMMING', 'RUNNING', 'CYCLING', 'GOLF', 'BOXING', 'MARTIAL_ARTS',
-//         'YOGA', 'DANCE', 'FITNESS', 'GYMNASTICS', 'SKIING', 'SNOWBOARDING',
-//         'ICE_SKATING', 'ICE_HOCKEY', 'CURLING', 'SQUASH', 'BADMINTON',
-//         'TABLE_TENNIS', 'BILLIARDS', 'DARTS', 'CHESS', 'POKER', 'BRIDGE',
-//         'BACKGAMMON', 'VIDEO_GAMES', 'BOARD_GAMES', 'CARD_GAMES', 'OTHER'
-//     ];
+const addAllSports = async (req, res) => {
 
-//     try {
-//         for (const sport of sports) {
-//             await prisma.sport.create({
-//                 data: {
-//                     sport: sport,
-//                 },
-//             });
-//         }
+    const sportsWithIcons = [
+        ['Football', 'Ionicons/football'],
+        ['Basketball', 'MaterialCommunityIcons/basketball'],
+        ['Tennis', 'MaterialCommunityIcons/tennis-ball'],
+        ['Volleyball', 'MaterialCommunityIcons/volleyball'],
+        ['Handball', 'MaterialCommunityIcons/handball'],
+        ['Rugby', 'MaterialCommunityIcons/rugby'],
+        ['Swimming', 'FontAwesome6/person-swimming'],
+        ['Running', 'FontAwesome5/running'],
+        ['Cycling', 'MaterialCommunityIcons/bicycle'],
+        ['Golf', 'Ionicons/golf'],
+        ['Boxing', 'MaterialCommunityIcons/boxing-glove'],
+        ['Martial Arts', 'MaterialIcons/sports-martial-arts'],
+        ['Yoga', 'MaterialCommunityIcons/yoga'],
+        ['Dance', 'MaterialCommunityIcons/dance-ballroom'],
+        ['Gymnastics', 'MaterialIcons/sports-gymnastics'],
+        ['Skiing', 'FontAwesome5/skiing'],
+        ['Snowboarding', 'FontAwesome5/snowboarding'],
+        ['Ice Skating', 'FontAwesome5/skating'],
+        ['Ice Hockey', 'MaterialCommunityIcons/hockey-puck'],
+        ['Badminton', 'MaterialCommunityIcons/badminton'],
+        ['Table Tennis', 'FontAwesome5/table-tennis'],
+        ['Billiards', 'MaterialCommunityIcons/billiards'],
+        ['Chess', 'FontAwesome5/chess'],
+        ['Poker', 'MaterialCommunityIcons/poker-chip'],
+        ['Board Games', 'FontAwesome5/fantasy-flight-games']
+    ];
 
-//         res.status(201).json(sports);
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ error: 'Failed to create sport' });
-//     }
-// };
+    try {
+        for (const sport of sportsWithIcons) {
+            await prisma.sport.create({
+                data: {
+                    sport: sport[0],
+                    icon: sport[1]
+                },
+            });
+        }
 
-module.exports = { createEvent, getEventsByLocationAndArea, /* addAllSports */ }
+        res.status(201).json(sportsWithIcons);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Failed to create sport' });
+    }
+};
+
+module.exports = { createEvent, getEventsByLocationAndArea, addAllSports }
+
+
