@@ -85,5 +85,6 @@ model UserSettings {
 model Sport {
   id     String  @id @default(uuid())
   sport  String
+  icon   String
   Events Event[] @relation("SportEvents")
 }

@@ -2,6 +2,7 @@ const express = require('express');
 const userRoutes = require('./routes/UserRoutes');
 const eventRoutes = require('./routes/EventRoutes');
 const messageRoutes = require('./routes/MessageRoutes');
+const sportRoutes = require('./routes/SportRoutes');
 const cors = require('cors');
 
 const app = express();
@@ -19,6 +20,7 @@ app.use(cors({
 app.use('/api/users', userRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/messages', messageRoutes);
+app.use('/api/sports', sportRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
