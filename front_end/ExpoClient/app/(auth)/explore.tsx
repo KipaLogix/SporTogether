@@ -54,6 +54,8 @@ const explore = () => {
   useEffect(() => {
     getSports().then((resp) => {
       setSports(resp);
+    }).catch((err) => {
+      alert(err);
     });
   }, []);
 
