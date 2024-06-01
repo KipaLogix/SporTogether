@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { Button, TextInput, View, StyleSheet, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Button, TextInput, View, StyleSheet, Text, TouchableOpacity, ActivityIndicator, Keyboard } from 'react-native';
 import Modal from 'react-native-modal';
 import RNPickerSelect from 'react-native-picker-select';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -26,6 +26,7 @@ const CreateEvent = ({ isVisible, onClose, onCreate, sports, userId, userLocatio
   const [locationSet, setLocationSet] = useState(false);
   const defaultLocation = { latitude: 0, longitude: 0 };
   const [markerLocation, setMarkerLocation] = useState(userLocation || defaultLocation);
+  const [showMap, setShowMap] = useState(true);
 
   const handleCreatePress = () => {
     onCreate({
@@ -39,6 +40,17 @@ const CreateEvent = ({ isVisible, onClose, onCreate, sports, userId, userLocatio
     });
     onClose();
   };
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => setShowMap(false));
+  
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => setShowMap(true));
+  
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
 
   const handleLocationPress = (e: any) => {
     const { latitude, longitude } = e.nativeEvent.coordinate;
@@ -107,9 +119,11 @@ const CreateEvent = ({ isVisible, onClose, onCreate, sports, userId, userLocatio
           placeholder={{ label: "Select a sport...", value: null}}
         />
         {userLocation ? (
-          <MapView style={styles.map} onPress={handleLocationPress} region={userLocation}>
-            {markerLocation && <Marker coordinate={markerLocation} />}
-          </MapView>
+          showMap && (
+            <MapView style={styles.map} onPress={handleLocationPress} region={userLocation}>
+              {markerLocation && <Marker coordinate={markerLocation} />}
+            </MapView>
+          )
         ) : (
           <ActivityIndicator size="large" color="#0000ff" />
         )}
