@@ -1,3 +1,4 @@
+
 import React, { useContext, useEffect, useState } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import CreateEvent from '../../../components/CreateEvent';
@@ -8,7 +9,6 @@ import { getPermissionAndLocation } from '../../../service/utils/LocationService
 import { createEvent } from '../../../service/api/EventService';
 import { getSports } from '../../../service/api/SportService';
 import { Sport } from '../../../interfaces/Sport';
-
 
 interface Params {
   title: string;

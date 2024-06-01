@@ -91,6 +91,10 @@ const getEventsByLocationAndArea = async (req, res) => {
 
         const events = await prisma.event.findMany({
             where: whereClause,
+            include: {
+                createdBy: true,
+                Sport: true,
+            },
         });
 
         event_logger.info("Events fetched successfully");
@@ -98,6 +102,31 @@ const getEventsByLocationAndArea = async (req, res) => {
     } catch (error) {
         event_logger.error("Error fetching events: " + error);
         res.status(500).json({ error: 'Failed to get events by location and area' });
+    }
+};
+
+const getEventById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        event_logger.info("Fetching event by id");
+
+        const event = await prisma.event.findMany({
+            where: {
+                id: id
+            },
+            include: {
+                createdBy: true,
+                Participants: true,
+                Sport: true,
+            },
+        });
+
+        event_logger.info("Event fetched successfully");
+        res.status(200).json(event);
+    } catch (error) {
+        event_logger.error("Error fetching event: " + error);
+        res.status(500).json({ error: 'Failed to get event by id' });
     }
 };
 
@@ -149,6 +178,6 @@ const addAllSports = async (req, res) => {
     }
 };
 
-module.exports = { createEvent, getEventsByLocationAndArea, addAllSports }
+module.exports = { createEvent, getEventsByLocationAndArea, getEventById, addAllSports }
 
 
