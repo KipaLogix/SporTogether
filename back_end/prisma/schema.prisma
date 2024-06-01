@@ -1,0 +1,89 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String        @id @default(uuid())
+  username       String        @unique
+  email          String        @unique
+  password       String
+  latitude       Float?
+  longitude      Float?
+  country        String?
+  city           String?
+  role           Role          @default(USER)
+  first_name     String?
+  last_name      String?
+  createdAt      DateTime      @default(now())
+  Event          Event[]       @relation("CreatedEvents")
+  Participations Event[]       @relation("EventParticipants")
+  SentMessages   Message[]     @relation("SentMessages")
+  Reviews        Review[]
+  Settings       UserSettings?
+}
+
+model Event {
+  id           String    @id @default(uuid())
+  title        String
+  description  String
+  date         DateTime
+  latitude     Float?
+  longitude    Float?
+  createdAt    DateTime  @default(now())
+  createdBy    User      @relation("CreatedEvents", fields: [userId], references: [id])
+  userId       String
+  Participants User[]    @relation("EventParticipants")
+  Messages     Message[] @relation("EventMessages")
+  Reviews      Review[]
+  Sport        Sport     @relation("SportEvents", fields: [sportId], references: [id])
+  sportId      String
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Message {
+  id       String @id @default(uuid())
+  sender   User   @relation("SentMessages", fields: [senderId], references: [id])
+  senderId String
+  event    Event  @relation("EventMessages", fields: [eventId], references: [id])
+  eventId  String
+  content  String
+}
+
+model Review {
+  user    User   @relation(fields: [userId], references: [id])
+  userId  String
+  event   Event  @relation(fields: [eventId], references: [id])
+  eventId String
+  rating  Int
+  comment String
+
+  @@id([userId, eventId])
+}
+
+model UserSettings {
+  user     User   @relation(fields: [userId], references: [id])
+  userId   String @id
+  theme    String @default("light")
+  language String @default("en")
+}
+
+model Sport {
+  id     String  @id @default(uuid())
+  sport  String
+  Events Event[] @relation("SportEvents")
+}
