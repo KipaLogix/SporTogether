@@ -2,15 +2,15 @@ import * as React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import { useEffect, useState } from 'react';
 import { List, PaperProvider } from 'react-native-paper';
-import EventsMap from '../../components/EventsMap';
-import { Event } from '../../interfaces/Event';
-import { getEventsByLocation } from '../../service/api/EventService';
-import { getPermissionAndLocation } from '../../service/utils/LocationService';
-import { useAuth } from '../../context/AuthContext';
+import EventsMap from '../../../components/EventsMap';
+import { Event } from '../../../interfaces/Event';
+import { getEventsByLocation } from '../../../service/api/EventService';
+import { getPermissionAndLocation } from '../../../service/utils/LocationService';
+import { useAuth } from '../../../context/AuthContext';
 import { Stack } from 'expo-router';
-import ExploreHeader from '../../components/ExploreHeader';
-import { Sport } from '../../interfaces/Sport';
-import { getSports } from '../../service/api/SportService';
+import ExploreHeader from '../../../components/ExploreHeader';
+import { Sport } from '../../../interfaces/Sport';
+import { getSports } from '../../../service/api/SportService';
 
 const explore = () => {
   const [location, setLocation] = useState<{

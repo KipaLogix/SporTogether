@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
-import CreateEvent from '../../components/CreateEvent';
+import CreateEvent from '../../../components/CreateEvent';
 import { FAB, Icon } from 'react-native-elements';
 import * as Animatable from 'react-native-animatable';
-import { useAuth } from '../../context/AuthContext';
-import { getPermissionAndLocation } from '../../service/utils/LocationService';
-import { createEvent } from '../../service/api/EventService';
-import { getSports } from '../../service/api/SportService';
-import { Sport } from '../../interfaces/Sport';
+import { useAuth } from '../../../context/AuthContext';
+import { getPermissionAndLocation } from '../../../service/utils/LocationService';
+import { createEvent } from '../../../service/api/EventService';
+import { getSports } from '../../../service/api/SportService';
+import { Sport } from '../../../interfaces/Sport';
 
 
 interface Params {
@@ -30,15 +30,15 @@ const myevents = () => {
   } | null>(null);
   const [sports, setSports] = useState<Sport[]>([]);
 
-  const handleCreateEvent = async ({title, description, date, sportId, longitude, latitude, userId} : Params) => {
-    const newEvent = await createEvent({title, description, date, sportId, longitude, latitude, userId});
+  const handleCreateEvent = async ({ title, description, date, sportId, longitude, latitude, userId }: Params) => {
+    const newEvent = await createEvent({ title, description, date, sportId, longitude, latitude, userId });
   };
 
   useEffect(() => {
     getPermissionAndLocation().then((loc) => {
       setUserLocation({
         latitude: loc?.coords?.latitude ?? useAuth().authState?.user?.latitude ?? 0,
-        longitude:  loc?.coords?.longitude ?? useAuth().authState?.user?.longitude ?? 0,
+        longitude: loc?.coords?.longitude ?? useAuth().authState?.user?.longitude ?? 0,
         latitudeDelta: 0.01,
         longitudeDelta: 0.01,
       });
