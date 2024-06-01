@@ -9,6 +9,8 @@ import { getPermissionAndLocation } from '../../service/utils/LocationService';
 import { useAuth } from '../../context/AuthContext';
 import { Stack } from 'expo-router';
 import ExploreHeader from '../../components/ExploreHeader';
+import { Sport } from '../../interfaces/Sport';
+import { getSports } from '../../service/api/SportService';
 
 const explore = () => {
   const [location, setLocation] = useState<{
@@ -18,8 +20,9 @@ const explore = () => {
     longitudeDelta: number;
   } | null>(null);
   const [events, setEvents] = useState<Event[]>([]);
+  const [sports, setSports] = useState<Sport[]>([]);
 
-  const [category, setCategory] = useState<string>('');
+  const [sportId, setSportId] = useState<string>('');
 
   useEffect(() => {
     getPermissionAndLocation().then((loc) => {
@@ -33,25 +36,39 @@ const explore = () => {
   }, []);
 
   useEffect(() => {
-    if (location) {
+    if (location && sportId !== '') {
+      getEventsByLocation(location.latitude, location.longitude, sportId).then((resp) => {
+        setEvents(resp);
+      }).catch((err) => {
+        alert(err);
+      });
+    } else if (location) {
       getEventsByLocation(location.latitude, location.longitude).then((resp) => {
         setEvents(resp);
       }).catch((err) => {
         alert(err);
       });
     }
-  }, [location]);
+  }, [location, sportId]);
 
-  const onDataChanged = (category: string) => {
-    setCategory(category);
+  useEffect(() => {
+    getSports().then((resp) => {
+      setSports(resp);
+    }).catch((err) => {
+      alert(err);
+    });
+  }, []);
+
+  const onDataChanged = (sportId: string) => {
+    setSportId(sportId);
   }
 
   return (
     <PaperProvider>
-      <View style={{ flex: 1 , marginTop: 20}}>
+      <View style={{ flex: 1, marginTop: 20 }}>
         <Stack.Screen
           options={{
-            header: () => <ExploreHeader onCategoryChanged={onDataChanged} />,
+            header: () => <ExploreHeader onSportChanged={onDataChanged} sports={sports} />,
           }}
         />
         <EventsMap events={events} location={location} />
