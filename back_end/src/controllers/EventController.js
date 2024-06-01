@@ -149,3 +149,4 @@ const addAllSports = async (req, res) => {
 };
 
 module.exports = { createEvent, getEventsByLocationAndArea, addAllSports }
+

@@ -4,6 +4,7 @@ const eventRoutes = require('./routes/EventRoutes');
 const messageRoutes = require('./routes/MessageRoutes');
 const sportRoutes = require('./routes/SportRoutes');
 const cors = require('cors');
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
