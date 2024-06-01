@@ -1,7 +1,6 @@
 import { EVENT_BASE_URL } from './urls';
 import { Event } from '../../interfaces/Event';
 import axios from 'axios';
-import { Sport } from '../../interfaces/Sport';
 
 interface Params {
     title: string;
@@ -13,8 +12,15 @@ interface Params {
     userId: string;
 }
 
-export const getEventsByLocation = async (latitude: number, longitude: number, sport: string | null = null, area: number = 160): Promise<Event[]> => {
-    return await axios.get(`${EVENT_BASE_URL}/latitude=${latitude}/longitude=${longitude}/area=${area}/${sport ? `${sport}` : ''}`)
+export const getEventsByLocation = async (latitude: number, longitude: number, sportId: string | null = null, area: number = 160): Promise<Event[]> => {
+    return await axios.get(EVENT_BASE_URL, {
+        params: {
+            latitude,
+            longitude,
+            area,
+            sportId
+        }
+    })
         .then((response) => {
             return response.data as Event[];
         }).catch((error) => {
