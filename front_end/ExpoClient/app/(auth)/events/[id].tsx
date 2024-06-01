@@ -4,6 +4,7 @@ import { useLocalSearchParams } from 'expo-router'
 import Animated from 'react-native-reanimated'
 import Colors from '../../../constants/Colors';
 import { getEventById } from '../../../service/api/EventService';
+
 import {Event} from '../../../interfaces/Event';
 
 const EventPage = () => {
@@ -58,11 +59,13 @@ const EventPage = () => {
             {listing.bathrooms} bathrooms
           </Text> */}
           {/* <View style={{ flexDirection: 'row', gap: 4 }}>
+
             <Ionicons name="star" size={16} />
             <Text style={styles.ratings}>
               {listing.review_scores_rating / 20} · {listing.number_of_reviews} reviews
             </Text>
           </View> */}
+
           <View style={styles.divider} />
 
           <View style={styles.hostView}>
@@ -144,6 +147,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     fontFamily: 'SpaceMono',
   }
+
 })
 
 export default EventPage;

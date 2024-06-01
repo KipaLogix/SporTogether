@@ -12,19 +12,18 @@ const InitialLayout = () => {
   const router = useRouter();
 
   useEffect(() => {
-    console.log('authState', authState?.token);
 
     const inTabsGroup = segments[0] === '(auth)';
 
     if (authState?.authenticated && !inTabsGroup) {
-      router.replace('/explore');      
+      router.replace('/explore');
     } else if (!authState?.authenticated) {
       router.replace('/login');
     }
 
   }, [authState?.authenticated]);
 
-  return <Slot/>
+  return <Slot />
 }
 
 const RootLayoutNav = () => {
@@ -39,19 +38,20 @@ const RootLayoutNav = () => {
   }, [error]);
 
   useEffect(() => {
-      if (loaded){ SplashScreen.hideAsync();
+    if (loaded) {
+      SplashScreen.hideAsync();
     }
   }, [loaded]);
 
-  if(!loaded) {
+  if (!loaded) {
     return null;
   }
 
   return (
     <AuthProvider>
-        <InitialLayout/>
+      <InitialLayout />
     </AuthProvider>
-      
+
   );
 }
 

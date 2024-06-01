@@ -1,5 +1,5 @@
 import React from "react";
-import { ActivityIndicator, View} from "react-native";
+import { ActivityIndicator, View } from "react-native";
 
 const StartPage = () => {
     return (
