@@ -42,12 +42,12 @@ const createEvent = async (req, res) => {
     }
 };
 
-//http://localhost:3000/api/events/latitude=46.770439/longitude=23.591423/area=150/346985fb-0199-4e96-80e9-dddfad6d9483
+//http://localhost:3000/api/events?latitude=46.770439&longitude=23.591423&area=150&sportId=346985fb-0199-4e96-80e9-dddfad6d9483
 const getEventsByLocationAndArea = async (req, res) => {
     console.log("intra");
     try {
 
-        const { latitude, longitude, area, sportId } = req.params;
+        const { latitude, longitude, area, sportId } = req.query;
 
         event_logger.info("Fetching events by location and area");
 
