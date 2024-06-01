@@ -16,7 +16,6 @@ interface Params {
 export const getEventsByLocation = async (latitude: number, longitude: number, area: number = 160, sport: string | null = null): Promise<Event[]> => {
     return await axios.get(`${EVENT_BASE_URL}/latitude=${latitude}/longitude=${longitude}/area=${area}/${sport ? `${sport}` : ''}`)
         .then((response) => {
-            console.log(response.data);
             return response.data as Event[];
         }).catch((error) => {
             console.error('Error fetching events: ', error);

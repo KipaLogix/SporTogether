@@ -11,7 +11,6 @@ import { Stack } from 'expo-router';
 import ExploreHeader from '../../components/ExploreHeader';
 
 const explore = () => {
-
   const [location, setLocation] = useState<{
     latitude: number;
     longitude: number;
@@ -37,6 +36,8 @@ const explore = () => {
     if (location) {
       getEventsByLocation(location.latitude, location.longitude).then((resp) => {
         setEvents(resp);
+      }).catch((err) => {
+        alert(err);
       });
     }
   }, [location]);

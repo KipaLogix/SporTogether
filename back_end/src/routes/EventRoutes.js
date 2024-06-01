@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-
 const { createEvent, getEventsByLocationAndArea, getSports, addAllSports } = require('../controllers/EventController');
+
 
 const requireAuth = require('../middleware/requireAuth');
 

@@ -6,8 +6,6 @@ import {User} from '../../interfaces/User';
 import {USER_BASE_URL} from "./urls";
 
 
-
-
 export const register = async (registerRequest : RegisterRequest): Promise<AuthenticationResponse> => {
     return await axios.post(`${USER_BASE_URL}/register`, registerRequest);
 }

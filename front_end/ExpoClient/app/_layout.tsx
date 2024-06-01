@@ -12,7 +12,6 @@ const InitialLayout = () => {
   const router = useRouter();
 
   useEffect(() => {
-    console.log('authState', authState?.token);
 
     const inTabsGroup = segments[0] === '(auth)';
 

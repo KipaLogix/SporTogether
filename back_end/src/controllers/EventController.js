@@ -101,6 +101,7 @@ const getEventsByLocationAndArea = async (req, res) => {
     }
 };
 
+
 const addAllSports = async (req, res) => {
 
     const sportsWithIcons = [
@@ -149,4 +150,5 @@ const addAllSports = async (req, res) => {
 };
 
 module.exports = { createEvent, getEventsByLocationAndArea, addAllSports }
+
 
