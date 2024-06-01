@@ -9,7 +9,7 @@ const requireAuth = require('../middleware/requireAuth');
 router.use(requireAuth);
 
 router.route('/').post(createEvent);
-router.route('/latitude=:latitude/longitude=:longitude/area=:area/:sportId?').get(getEventsByLocationAndArea);
+router.route('/').get(getEventsByLocationAndArea);
 router.route('/add').post(addAllSports);
 
 module.exports = router;
