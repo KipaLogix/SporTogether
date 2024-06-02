@@ -31,6 +31,9 @@ const RootLayoutNav = () => {
   const colorScheme = useColorScheme();
   const [loaded, error] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    SpaceMonoBold: require('../assets/fonts/SpaceMono-Bold.ttf'),
+    SpaceMonoItalic: require('../assets/fonts/SpaceMono-Italic.ttf'),
+    SpaceMonoBoldItalic: require('../assets/fonts/SpaceMono-BoldItalic.ttf'),
   });
 
   useEffect(() => {

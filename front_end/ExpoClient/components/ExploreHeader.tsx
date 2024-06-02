@@ -6,6 +6,7 @@ import * as Haptics from 'expo-haptics';
 import { getSports } from '../service/api/SportService';
 import { Sport } from '../interfaces/Sport';
 import { on } from 'events';
+import { SportIcon } from './SportIcon';
 
 interface Props {
     onSportChanged: (category: string) => void;
@@ -13,27 +14,8 @@ interface Props {
 }
 
 const ExploreHeader = ({ onSportChanged, sports }: Props) => {
-    // const [sports, setSports] = useState<Sport[]>([]);
     const itemsRef = useRef<Array<TouchableOpacity | null>>([]);
     const [activeIndex, setActiveIndex] = useState<string>('');
-
-    const GetIcon = (sport: Sport, index: string) => {
-        const icon_splited = sport.icon.split("/")
-        const icon_provider = icon_splited[0]
-        const icon_name = icon_splited[1]
-        return (
-            <>
-                {icon_provider === 'FontAwesome5' && <FontAwesome5 name={icon_name as any} size={20} color={activeIndex === index ? '#000' : Colors.grey} />}
-                {icon_provider === 'FontAwesome6' && <FontAwesome6 name={icon_name as any} size={20} color={activeIndex === index ? '#000' : Colors.grey} />}
-                {icon_provider === 'Ionicons' && <Ionicons name={icon_name as any} size={20} color={activeIndex === index ? '#000' : Colors.grey} />}
-                {icon_provider === 'MaterialCommunityIcons' && <MaterialCommunityIcons name={icon_name as any} size={20} color={activeIndex === index ? '#000' : Colors.grey} />}
-                {icon_provider === 'MaterialIcons' && <MaterialIcons name={icon_name as any} size={20} color={activeIndex === index ? '#000' : Colors.grey} />}
-                <Text style={styles.categoryText}>{sport.sport}</Text>
-            </>
-        );
-
-    }
-
 
     const selectCategory = (index: string) => {
         if (activeIndex === index) {
@@ -64,7 +46,7 @@ const ExploreHeader = ({ onSportChanged, sports }: Props) => {
                             style={activeIndex == sport.id ? styles.categoriesBtnActive : styles.categoriesBtn}
                             ref={(el) => itemsRef.current[index] = el}
                         >
-                            {GetIcon(sport, sport.id)}
+                            {SportIcon(sport, activeIndex == sport.id ? '#000' : Colors.grey)}
 
                         </TouchableOpacity>
                     ))}
