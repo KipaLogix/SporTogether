@@ -16,6 +16,7 @@ import { Stack } from 'expo-router';
 import ExploreHeader from '../../../components/ExploreHeader';
 import { Sport } from '../../../interfaces/Sport';
 import { getSports } from '../../../service/api/SportService';
+import EventsBottomSheetList from '../../../components/EventsBottomSheetList';
 
 const explore = () => {
 
@@ -75,22 +76,19 @@ const explore = () => {
 
   return (
     <PaperProvider>
-      <View style={{ flex: 1, marginTop: 20 }}>
+      <View style={{ flex: 1 }}>
         <Stack.Screen
           options={{
             header: () => <ExploreHeader onSportChanged={onDataChanged} sports={sports} />,
           }}
         />
+
         <EventsMap events={events} location={location} />
+        <EventsBottomSheetList events={events} />
 
       </View>
     </PaperProvider>
   );
-
-
 };
 
 export default explore;
-
-const styles = StyleSheet.create({
-});

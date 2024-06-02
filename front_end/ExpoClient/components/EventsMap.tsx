@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet} from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import React from 'react';
 
 import MapView, { Marker } from 'react-native-maps';
@@ -9,54 +9,42 @@ interface Props {
     events: Event[];
     location: any;
 }
-const EventsMap = ({events, location} : Props) => {
+const EventsMap = ({ events, location }: Props) => {
     const router = useRouter();
 
-    
+
     const onMarkerSelected = (event: Event) => {
         // TODO: Implement navigation to event details
         // router.push('/event/${event.id}'); // used to navigate to event details 
     };
     return (
-        <View style={styles.container}>
-            <MapView style={StyleSheet.absoluteFillObject}
-                showsMyLocationButton={true}
-                showsUserLocation={true}
-                region={location}
-                >
-                    {events.map((item: Event) => (
-                        <Marker 
-                        key = {item.id}
-                        onPress={() => onMarkerSelected(item)}
-                        coordinate={{
-                            latitude: item.latitude? item.latitude : 0,
-                            longitude: item.longitude? item.longitude : 0
-                        }
-                        }>
-                            <View style={styles.marker}>
-                                <Text style={styles.markerText}>
-                                    {item.title}
-                                </Text>
-                            </View>
-                        </Marker>
-                    ))}
-                </MapView>
-        </View>
+        <MapView style={{ position: 'absolute', top: 21, left: 0, right: 0, bottom: 64 }}
+            showsMyLocationButton={true}
+            showsUserLocation={true}
+            region={location}
+        >
+            {events.map((item: Event) => (
+                <Marker
+                    key={item.id}
+                    onPress={() => onMarkerSelected(item)}
+                    coordinate={{
+                        latitude: item.latitude ? item.latitude : 0,
+                        longitude: item.longitude ? item.longitude : 0
+                    }
+                    }>
+                    <View style={styles.marker}>
+                        <Text style={styles.markerText}>
+                            {item.title}
+                        </Text>
+                    </View>
+                </Marker>
+            ))}
+        </MapView>
     );
 }
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    map: {
-        width: '100%',
-        height: '100%',
-    },
     marker: {
-        backgroundColor: 'green',
+        backgroundColor: '#000',
         padding: 5,
         borderRadius: 12,
         elevation: 5,
