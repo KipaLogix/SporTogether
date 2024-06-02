@@ -23,25 +23,23 @@ const EventsBottomSheetList = ({ events }: Props) => {
     };
 
     return (
-        <GestureHandlerRootView style={{ flex: 1 }}>
-            <BottomSheet
-                ref={bottomSheetRef}
-                snapPoints={snapPoints}
-                index={1}
-                style={styles.sheetContainer}
-                handleIndicatorStyle={{ backgroundColor: Colors.grey }}
-                enablePanDownToClose={false}>
-                <View style={styles.contentContainer}>
-                    <EventsList events={events} />
-                    <View style={styles.absoluteView}>
-                        <TouchableOpacity onPress={onShowMap} style={styles.btn}>
-                            <Text style={{ color: '#fff' }}>Map</Text>
-                            <Ionicons name="map" size={20} style={{ marginLeft: 10 }} color={'#fff'} />
-                        </TouchableOpacity>
-                    </View>
+        <BottomSheet
+            ref={bottomSheetRef}
+            snapPoints={snapPoints}
+            index={1}
+            style={styles.sheetContainer}
+            handleIndicatorStyle={{ backgroundColor: Colors.grey }}
+            enablePanDownToClose={false}>
+            <View style={styles.contentContainer}>
+                <EventsList events={events} />
+                <View style={styles.absoluteView}>
+                    <TouchableOpacity onPress={onShowMap} style={styles.btn}>
+                        <Text style={{ color: '#fff' }}>Map</Text>
+                        <Ionicons name="map" size={20} style={{ marginLeft: 10 }} color={'#fff'} />
+                    </TouchableOpacity>
                 </View>
-            </BottomSheet>
-        </GestureHandlerRootView>
+            </View>
+        </BottomSheet>
     );
 };
 

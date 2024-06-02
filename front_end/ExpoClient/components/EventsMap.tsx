@@ -18,7 +18,7 @@ const EventsMap = ({ events, location }: Props) => {
         // router.push('/event/${event.id}'); // used to navigate to event details 
     };
     return (
-        <MapView style={{ position: 'absolute', top: 21, left: 0, right: 0, bottom: 64 }}
+        <MapView style={styles.pos}
             showsMyLocationButton={true}
             showsUserLocation={true}
             region={location}
@@ -40,6 +40,7 @@ const EventsMap = ({ events, location }: Props) => {
                 </Marker>
             ))}
         </MapView>
+
     );
 }
 const styles = StyleSheet.create({
@@ -58,6 +59,11 @@ const styles = StyleSheet.create({
     markerText: {
         color: 'white',
         fontSize: 10,
-    }
-});
+    },
+    pos: {
+        height: '100%',
+        width: '100%',
+    },
+}
+);
 export default EventsMap;

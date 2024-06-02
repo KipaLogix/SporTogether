@@ -17,6 +17,7 @@ import ExploreHeader from '../../../components/ExploreHeader';
 import { Sport } from '../../../interfaces/Sport';
 import { getSports } from '../../../service/api/SportService';
 import EventsBottomSheetList from '../../../components/EventsBottomSheetList';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const explore = () => {
 
@@ -75,19 +76,23 @@ const explore = () => {
   }
 
   return (
+
     <PaperProvider>
+
       <View style={{ flex: 1 }}>
         <Stack.Screen
           options={{
             header: () => <ExploreHeader onSportChanged={onDataChanged} sports={sports} />,
           }}
         />
-
-        <EventsMap events={events} location={location} />
-        <EventsBottomSheetList events={events} />
-
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <EventsMap events={events} location={location} />
+          <EventsBottomSheetList events={events} />
+        </GestureHandlerRootView>
       </View>
+
     </PaperProvider>
+
   );
 };
 
