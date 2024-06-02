@@ -32,6 +32,11 @@ const createEvent = async (req, res) => {
                 latitude,
                 longitude,
                 sportId,
+                Participants: {
+                    connect: {
+                        id: userId
+                    }
+                }
             },
         });
         event_logger.info("Event created successfully");

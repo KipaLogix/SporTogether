@@ -33,9 +33,19 @@ const getMessagesByEventId = async (req, res) => {
             where: {
                 eventId,
             },
+            include: {
+                sender: true,
+            },
         });
+        const messagesWithNullPassword = messages.map(message => ({
+            ...message,
+            sender: {
+                ...message.sender,
+                password: null,
+            },
+        }));
         message_logger.info("Messages fetched successfully");
-        res.json(messages);
+        res.json(messagesWithNullPassword);
     } catch (error) {
         message_logger.error("Error fetching messages: " + error);
         res.status(500).json({ error: 'Failed to get messages' });
