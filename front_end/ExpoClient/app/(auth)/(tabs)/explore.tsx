@@ -89,6 +89,7 @@ const explore = () => {
           <EventsMap events={events} location={location} />
           <EventsBottomSheetList events={events} />
         </GestureHandlerRootView>
+
       </View>
 
     </PaperProvider>

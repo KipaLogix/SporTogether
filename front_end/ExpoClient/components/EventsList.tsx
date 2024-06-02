@@ -1,61 +1,98 @@
-import { View, Text, FlatList, ListRenderItem, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import React, { useEffect, useState, useRef } from 'react';
-import { format } from 'date-fns';
 
-import { Event } from '../interfaces/Event';
-import { defaultStyles } from '../constants/Styles';
+import React, { useEffect, useState, useRef } from 'react';
+import { View, Text, FlatList, ListRenderItem, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { format } from 'date-fns';
 import { Link } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeInRight, FadeOutLeft } from 'react-native-reanimated';
 import { BottomSheetFlatList, BottomSheetFlatListMethods } from '@gorhom/bottom-sheet';
 
+import { getAddressFromCoordinates } from '../service/utils/LocationService';
+
+import { Event } from '../interfaces/Event';
+import { defaultStyles } from '../constants/Styles';
+
 interface Props {
-    events: Event[];
+  events: Event[];
 }
 
 const EventsList = ({ events }: Props) => {
-    const [loading, setLoading] = useState(false);
-    const listRef = useRef<BottomSheetFlatListMethods>(null);
+  const [loading, setLoading] = useState(false);
+  const [addresses, setAddresses] = useState<Record<string, string>>({});
+  const listRef = useRef<BottomSheetFlatListMethods>(null);
 
-    const renderRow: ListRenderItem<Event> = ({ item }) => {
-        const formattedDate = format(new Date(item.date), 'PPpp');
-        return (
-            <Link href={`/events/${item.id}`} asChild>
-                <TouchableOpacity>
-                    <Animated.View style={styles.event} entering={FadeInRight} exiting={FadeOutLeft}>
-                        <Image source={require('../assets/images/default-event-icon.png')} style={styles.image} />
-                        <TouchableOpacity style={{ position: 'absolute', right: 30, top: 30 }}>
-                            <Ionicons name="heart-outline" size={24} color="black" />
-                        </TouchableOpacity>
+  useEffect(() => {
+    console.log('Reload listings: ', events);
+    setLoading(true);
 
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', }}>
-                            <Text style={{ fontSize: 16, fontFamily: 'SpaceMono' }}>{item.title}</Text>
-                            <Text style={{ fontSize: 16, fontFamily: 'SpaceMono' }}>{item.Sport!.sport}</Text>
-                        </View>
+    const fetchAddresses = async () => {
+      const newAddresses: Record<string, string> = {};
 
-                        <Text style={{ fontFamily: 'SpaceMono' }}>intiated by {item.createdBy!.username}</Text>
-                        <View style={{ flexDirection: 'row' }}>
-                            <Text style={{ fontFamily: 'SpaceMono' }}>{formattedDate}</Text>
-                        </View>
-                    </Animated.View>
-                </TouchableOpacity>
-            </Link>
-        )
+      for (const event of events) {
+        try {
+          const address = await getAddressFromCoordinates(event.latitude ?? 0, event.longitude ?? 0);
+          newAddresses[event.id ?? 0 ] = address;
+        } catch (error) {
+          newAddresses[event.id ?? 0] = 'Error fetching address';
+        }
+      }
+
+      setAddresses(newAddresses);
+      setLoading(false);
     };
 
+    fetchAddresses().catch((error) => {
+        console.error('Error fetching addresses: ', error);
+    });
+  }, [events]);
+
+  
+
+  const renderRow: ListRenderItem<Event> = ({ item }) => {
+    const formattedDate = format(new Date(item.date), 'PPpp');
+    const address = addresses[item.id ?? ''];
+
     return (
-        <View style={defaultStyles.container}>
-            <BottomSheetFlatList
-                data={loading ? [] : events}
-                renderItem={renderRow}
-                ref={listRef}
-                ListHeaderComponent={<Text style={styles.info}>{events.length} events</Text>}
-            />
-        </View>
+      <Link href={`/events/${item.id}`} asChild>
+        <TouchableOpacity>
+          <Animated.View style={styles.event} entering={FadeInRight} exiting={FadeOutLeft}>
+            <Image source={require('../assets/images/default-event-icon.png')} style={styles.image} />
+            <TouchableOpacity style={{ position: 'absolute', right: 30, top: 30 }}>
+              <Ionicons name="heart-outline" size={24} color="black" />
+            </TouchableOpacity>
+
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <Text style={{ fontSize: 16, fontFamily: 'SpaceMono' }}>{item.title}</Text>
+              <Text style={{ fontSize: 16, fontFamily: 'SpaceMono' }}>{item.Sport?.sport}</Text>
+            </View>
+
+            <Text style={{ fontFamily: 'SpaceMono' }}>initiated by {item.createdBy?.username}</Text>
+            <View style={{ flexDirection: 'row' }}>
+              <Text style={{ fontFamily: 'SpaceMono' }}>{formattedDate}</Text>
+            </View>
+            <View style={{ flexDirection: 'row' }}>
+              <Text style={{ fontFamily: 'SpaceMono' }}>{address}</Text>
+            </View>
+          </Animated.View>
+        </TouchableOpacity>
+      </Link>
+
     );
+  };
+
+  return (
+    <View style={defaultStyles.container}>
+      <BottomSheetFlatList
+        data={loading ? [] : events}
+        renderItem={renderRow}
+        ref={listRef}
+      />
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
+
     event: {
         padding: 16,
         gap: 10,
@@ -75,3 +112,4 @@ const styles = StyleSheet.create({
 })
 
 export default EventsList;
+
