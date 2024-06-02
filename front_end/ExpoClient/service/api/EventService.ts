@@ -1,7 +1,6 @@
 import { EVENT_BASE_URL } from './urls';
 import { Event } from '../../interfaces/Event';
 import axios from 'axios';
-import { Sport } from '../../interfaces/Sport';
 
 interface Params {
     title: string;
@@ -11,10 +10,17 @@ interface Params {
     longitude: number;
     latitude: number;
     userId: string;
-  }
+}
 
-export const getEventsByLocation = async (latitude: number, longitude: number, area: number = 160, sport: string | null = null): Promise<Event[]> => {
-    return await axios.get(`${EVENT_BASE_URL}/latitude=${latitude}/longitude=${longitude}/area=${area}/${sport ? `${sport}` : ''}`)
+export const getEventsByLocation = async (latitude: number, longitude: number, sportId: string | null = null, area: number = 160): Promise<Event[]> => {
+    return await axios.get(EVENT_BASE_URL, {
+        params: {
+            latitude,
+            longitude,
+            area,
+            sportId
+        }
+    })
         .then((response) => {
             return response.data as Event[];
         }).catch((error) => {
@@ -29,6 +35,16 @@ export const createEvent = async (event: Event): Promise<Event> => {
         return response.data as Event;
     } catch (error) {
         console.error('Error creating event: ', error);
+        throw error;
+    }
+}
+
+export const getEventById = async (id: string): Promise<Event> => {
+    try {
+        const response = await axios.get(`${EVENT_BASE_URL}/${id}`);
+        return await response.data;
+    } catch (error) {
+        console.error('Error fetching event by id: ', error);
         throw error;
     }
 }

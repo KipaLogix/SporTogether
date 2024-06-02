@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, TextInput, View, StyleSheet, Text, TouchableOpacity, ActivityIndicator, Keyboard } from 'react-native';
+import { Button, TextInput, View, StyleSheet, Text, TouchableOpacity, ActivityIndicator, Keyboard, Alert } from 'react-native';
 import Modal from 'react-native-modal';
 import RNPickerSelect from 'react-native-picker-select';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -29,6 +29,20 @@ const CreateEvent = ({ isVisible, onClose, onCreate, sports, userId, userLocatio
   const [showMap, setShowMap] = useState(true);
 
   const handleCreatePress = () => {
+    if (!title || !description || !date || !sportId || !locationSet) {
+      Alert.alert(
+        "Incomplete Fields", 
+        "Please fill in all fields and set a location!", 
+        [
+          {
+            text: "OK", 
+            onPress: () => console.log("OK Pressed"),
+          },
+        ],
+        { cancelable: false }
+      );
+      return;
+    }
     onCreate({
       title,
       description,
@@ -38,8 +52,24 @@ const CreateEvent = ({ isVisible, onClose, onCreate, sports, userId, userLocatio
       latitude: markerLocation.latitude,
       userId,
     });
+    setTitle('');
+    setDescription('');
+    setDate(null);
+    setSportId('');
+    setMarkerLocation(userLocation);
+    setLocationSet(false);
     onClose();
   };
+
+  const closeWindow = () => {
+    setTitle('');
+    setDescription('');
+    setDate(null);
+    setSportId('');
+    setMarkerLocation(userLocation);
+    setLocationSet(false);
+    onClose();
+  }
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => setShowMap(false));
@@ -63,10 +93,10 @@ const CreateEvent = ({ isVisible, onClose, onCreate, sports, userId, userLocatio
 
 
   return (
-    <Modal isVisible={isVisible} onBackdropPress={onClose} animationIn="zoomIn" animationOut="zoomOut">
+    <Modal isVisible={isVisible} onBackdropPress={closeWindow} animationIn="zoomIn" animationOut="zoomOut">
       <View style={styles.container}>
         <Text style={styles.title}>Create Event</Text>
-        <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+        <TouchableOpacity style={styles.closeButton} onPress={closeWindow}>
           <Icon name="times" size={20} color="#FFF" />
         </TouchableOpacity>
         <TextInput style={styles.input} placeholder="Title" value={title} onChangeText={setTitle} />

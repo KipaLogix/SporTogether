@@ -5,50 +5,29 @@ import Colors from '../constants/Colors';
 import * as Haptics from 'expo-haptics';
 import { getSports } from '../service/api/SportService';
 import { Sport } from '../interfaces/Sport';
+import { on } from 'events';
+import { SportIcon } from './SportIcon';
 
 interface Props {
-    onCategoryChanged: (category: string) => void;
+    onSportChanged: (category: string) => void;
+    sports: Sport[];
 }
 
-const ExploreHeader = ({ onCategoryChanged }: Props) => {
-    const [sports, setSports] = useState<Sport[]>([]);
+const ExploreHeader = ({ onSportChanged, sports }: Props) => {
     const itemsRef = useRef<Array<TouchableOpacity | null>>([]);
     const [activeIndex, setActiveIndex] = useState<string>('');
-
-    const GetIcon = (sport: Sport, index: string) => {
-        const icon_splited = sport.icon.split("/")
-        const icon_provider = icon_splited[0]
-        const icon_name = icon_splited[1]
-        return (
-            <>
-                {icon_provider === 'FontAwesome5' && <FontAwesome5 name={icon_name as any} size={20} color={activeIndex === index ? '#000' : Colors.grey} />}
-                {icon_provider === 'FontAwesome6' && <FontAwesome6 name={icon_name as any} size={20} color={activeIndex === index ? '#000' : Colors.grey} />}
-                {icon_provider === 'Ionicons' && <Ionicons name={icon_name as any} size={20} color={activeIndex === index ? '#000' : Colors.grey} />}
-                {icon_provider === 'MaterialCommunityIcons' && <MaterialCommunityIcons name={icon_name as any} size={20} color={activeIndex === index ? '#000' : Colors.grey} />}
-                {icon_provider === 'MaterialIcons' && <MaterialIcons name={icon_name as any} size={20} color={activeIndex === index ? '#000' : Colors.grey} />}
-                <Text style={styles.categoryText}>{sport.sport}</Text>
-            </>
-        );
-
-    }
-
 
     const selectCategory = (index: string) => {
         if (activeIndex === index) {
             setActiveIndex('');
+            onSportChanged('');
         } else {
             setActiveIndex(index);
+            onSportChanged(sports.find((sport) => sport.id === index)!.id);
         }
 
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        onCategoryChanged(sports.find((sport) => sport.id === index)?.sport || '');
     };
-
-    useEffect(() => {
-        getSports().then((Sports: Sport[]) => {
-            setSports(Sports);
-        });
-    }, []);
 
     return (
         <SafeAreaView style={{ backgroundColor: '#fff', height: 100 }}>
@@ -67,7 +46,7 @@ const ExploreHeader = ({ onCategoryChanged }: Props) => {
                             style={activeIndex == sport.id ? styles.categoriesBtnActive : styles.categoriesBtn}
                             ref={(el) => itemsRef.current[index] = el}
                         >
-                            {GetIcon(sport, sport.id)}
+                            {SportIcon(sport, activeIndex == sport.id ? '#000' : Colors.grey)}
 
                         </TouchableOpacity>
                     ))}
