@@ -80,22 +80,10 @@ const EventPage = () => {
           </Text>
           <View style={styles.divider} />
 
-          {/* <View style={{ flexDirection: 'row', gap: 4 }}>
-
-            <Ionicons name="star" size={16} />
-            <Text style={styles.ratings}>
-              {listing.review_scores_rating / 20} · {listing.number_of_reviews} reviews
-            </Text>
-          </View> */}
-
-          {/* <View style={styles.divider} /> */}
-
-          <View style={styles.hostView}>
-            {/* <Image source={{ uri: listing.host_picture_url }} style={styles.host} /> */}
-
+          <View style={styles.creatorView}>
             <View>
-              <Text style={styles.hostView}>Initiated by {event.createdBy!.username}</Text>
-              <Text style={styles.hostView}>Current participant count: {event.Participants?.length}</Text>
+              <Text style={styles.creatorView}>Initiated by {event.createdBy!.username}</Text>
+              <Text style={styles.creatorView}>Current participant count: {event.Participants?.length}</Text>
             </View>
           </View>
 
@@ -175,14 +163,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.grey,
     marginVertical: 16,
   },
-  host: {
-    width: 50,
-    height: 50,
-    borderRadius: 50,
-    backgroundColor: Colors.grey,
-    fontFamily: 'SpaceMono',
-  },
-  hostView: {
+  creatorView: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
