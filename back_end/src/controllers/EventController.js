@@ -111,7 +111,7 @@ const getEventById = async (req, res) => {
 
         event_logger.info("Fetching event by id");
 
-        const event = await prisma.event.findMany({
+        const event = await prisma.event.findFirstOrThrow({
             where: {
                 id: id
             },

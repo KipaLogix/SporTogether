@@ -6,19 +6,25 @@ import Colors from '../../../constants/Colors';
 import { getEventById } from '../../../service/api/EventService';
 
 import {Event} from '../../../interfaces/Event';
+import { getAddressFromCoordinates } from '../../../service/utils/LocationService';
 
 const EventPage = () => {
   const [event, setEvent] = useState<Event | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
+  const [address, setAddress] = useState<string | null>(null);
   const { id } = useLocalSearchParams<{ id: string }>();
-  console.log('Event id: ', id);
 
   useEffect(() => {
     if (id) {
       getEventById(id)
-        .then((event) => {
-          console.log('Event useEffect: ', event);
-          setEvent(event);
+        .then((resp_event) => {
+          console.log('Event useEffect: ', resp_event);
+          setEvent(resp_event);
+          if(event !== undefined) {
+            fetchAddress(event.latitude ?? 0, event.longitude ?? 0).catch((error) => {
+              console.error('Error fetching address: ', error);
+            });
+          }
         })
         .catch((error) => {
           console.error('Error fetching event: ', error);
@@ -28,6 +34,11 @@ const EventPage = () => {
         });
     }
   }, []);
+
+  const fetchAddress = async (lat: number, lon: number) => {
+    const address = await getAddressFromCoordinates(lat, lon);
+    setAddress(address);
+  };
 
   if (loading) {
     return (
@@ -50,14 +61,14 @@ const EventPage = () => {
       <Animated.ScrollView style={{height: 100}}>
         <Animated.Image source={require('../../../assets/images/default-event-icon.png')} style={styles.image} />
         <View style={styles.infoContainer}>
-          <Text style={styles.title}>{event.title} aaaa</Text>
+          <Text style={styles.title}>{event.title}</Text>
           <Text style={styles.location}>
-            {event.latitude} · {event.longitude}
+            {address || `${event.latitude} · ${event.longitude}`}
           </Text>
-          {/* <Text style={styles.rooms}>
-            {listing.guests_included} guests · {listing.bedrooms} bedrooms · {listing.beds} bed ·{' '}
-            {listing.bathrooms} bathrooms
-          </Text> */}
+          <View style={styles.divider} />
+          <Text style={styles.rooms}>
+            {event.Sport?.sport}
+          </Text>
           {/* <View style={{ flexDirection: 'row', gap: 4 }}>
 
             <Ionicons name="star" size={16} />

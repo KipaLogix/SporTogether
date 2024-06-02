@@ -81,8 +81,8 @@ const explore = () => {
             header: () => <ExploreHeader onSportChanged={onDataChanged} sports={sports} />,
           }}
         />
-        <EventsMap events={events} location={location} />
-
+        {/* <EventsMap events={events} location={location} /> */}
+          <EventsList events={events} sportCategoryId={sportId} />
       </View>
     </PaperProvider>
   );

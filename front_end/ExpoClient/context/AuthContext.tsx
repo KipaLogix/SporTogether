@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }: any) => {
 
             if (token && isTokenValid(token)) {
                 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-                
+                console.log('Token: ', token);
                 setAuthState({
                     token,
                     authenticated: true,
