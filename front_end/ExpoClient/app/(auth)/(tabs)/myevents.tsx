@@ -1,5 +1,4 @@
-
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import CreateEvent from '../../../components/CreateEvent';
 import { FAB, Icon } from 'react-native-elements';
@@ -44,8 +43,8 @@ const myevents = () => {
     });
   }, []);
 
-  const handleCreateEvent = async ({ title, description, date, sportId, longitude, latitude, userId }: Params) => {
-    const newEvent = await createEvent({ title, description, date, sportId, longitude, latitude, userId });
+  const handleCreateEvent = async ({title, description, date, sportId, longitude, latitude, userId} : Params) => {
+    await createEvent({title, description, date, sportId, longitude, latitude, userId});
   };
 
   useEffect(() => {

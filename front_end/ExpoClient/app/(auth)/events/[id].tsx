@@ -1,7 +1,9 @@
-import { View, Text, StyleSheet, Dimensions, ActivityIndicator, TouchableOpacity, Alert, } from 'react-native'
+
+import { View, Text, StyleSheet, Dimensions, ActivityIndicator, TouchableOpacity, Animated, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { Link, router, useLocalSearchParams } from 'expo-router'
-import Animated, { SlideInDown, SlideInUp, interpolate, useAnimatedRef, useAnimatedStyle, useScrollViewOffset } from 'react-native-reanimated'
+import { Link, useLocalSearchParams, router } from 'expo-router'
+import { SlideInDown, SlideInUp, interpolate, useAnimatedRef, useAnimatedStyle, useScrollViewOffset } from 'react-native-reanimated'
+
 import Colors from '../../../constants/Colors';
 import { cancelEvent, getEventById, joinEvent, leaveEvent } from '../../../service/api/EventService';
 import { SportIcon } from '../../../components/SportIcon';
@@ -10,17 +12,20 @@ import { getAddressFromCoordinates } from '../../../service/utils/LocationServic
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../../context/AuthContext';
 import { defaultStyles } from '../../../constants/Styles';
+import Chat from '../../../components/Chat';
 
 const EventPage = () => {
+  const user = useAuth().authState!.user!;
+
   const { authState, onLogout } = useAuth();
   const [event, setEvent] = useState<Event>();
+
   const [loading, setLoading] = useState<boolean>(true);
   const [address, setAddress] = useState<string | null>(null);
+  const [isChatVisible, setChatVisible] = React.useState(false);
   const { id } = useLocalSearchParams<{ id: string }>();
   const [check, setCheck] = useState<boolean>(true);
   const [owner, setOwner] = useState<boolean>(false);
-
-
 
   useEffect(() => {
     if (id) {
@@ -125,40 +130,43 @@ const EventPage = () => {
   }
 
   return (
-    <View style={styles.container}>
-      <Animated.ScrollView contentContainerStyle={{ paddingBottom: 100 }} showsVerticalScrollIndicator={false}
-        scrollEventThrottle={16}>
-        <Animated.Image source={require('../../../assets/images/default-event-icon.png')} style={[styles.image]} />
-        <View style={styles.infoContainer}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text style={styles.title}>{event.title}</Text>
-            <View style={styles.sport}>
-              {SportIcon(event.Sport!, Colors.grey)}
+    <View style={{flex:1}}>
+      <View style={styles.container}>
+        <Animated.ScrollView contentContainerStyle={{ paddingBottom: 100 }} showsVerticalScrollIndicator={false}
+          scrollEventThrottle={16}>
+          <Animated.Image source={require('../../../assets/images/default-event-icon.png')} style={[styles.image]} />
+          <View style={styles.infoContainer}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <Text style={styles.title}>{event.title}</Text>
+              <View style={styles.sport}>
+                {SportIcon(event.Sport!, Colors.grey)}
+              </View>
             </View>
-          </View>
-          <Text style={styles.location}>
-            {address}
-          </Text>
-          <View style={styles.divider} />
+            <Text style={styles.location}>
+              {address}
+            </Text>
+            <View style={styles.divider} />
 
-          <View style={styles.creatorView}>
-            <View>
-              <Text style={styles.creatorView}>Initiated by {event.createdBy!.username}</Text>
-              <Text style={styles.creatorView}>Current participant count: {event.Participants?.length}</Text>
+            <View style={styles.creatorView}>
+              <View>
+                <Text style={styles.creatorView}>Initiated by {event.createdBy!.username}</Text>
+                <Text style={styles.creatorView}>Current participant count: {event.Participants?.length}</Text>
+              </View>
             </View>
+
+            <View style={styles.divider} />
+            <Text style={{ fontFamily: 'SpaceMonoBold' }}>Description: </Text>
+            <Text style={styles.description}>{event.description}</Text>
           </View>
+          <View style={styles.infoContainer}>
 
-          <View style={styles.divider} />
-          <Text style={{ fontFamily: 'SpaceMonoBold' }}>Description: </Text>
-          <Text style={styles.description}>{event.description}</Text>
-        </View>
-        <View style={styles.infoContainer}>
-
-        </View>
-      </Animated.ScrollView>
-      <Animated.View style={defaultStyles.footer}>
+          </View>
+        </Animated.ScrollView>
+        <Animated.View style={defaultStyles.footer}>
         <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-          <TouchableOpacity style={{ padding: '5%' }} >
+          <TouchableOpacity 
+            style={{ padding: '5%' }}
+            onPress={() => setChatVisible(true)} >
             <Ionicons name='chatbubbles' color={Colors.grey} size={30} />
             <Text style={styles.description}>Chat</Text>
           </TouchableOpacity>
@@ -181,7 +189,9 @@ const EventPage = () => {
             )}
         </View>
       </Animated.View>
-    </View>
+      </View>
+      {isChatVisible && <Chat event={event} user={user} fullscreen={true} closeChat={() => setChatVisible(false)}/>}
+   </View>
   )
 };
 
