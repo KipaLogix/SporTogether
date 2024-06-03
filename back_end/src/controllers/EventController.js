@@ -241,6 +241,133 @@ const addAllSports = async (req, res) => {
     }
 };
 
-module.exports = { createEvent, getEventsByLocationAndArea, getEventById, addAllSports, getMyEvents }
+//http://localhost:3001/api/events/join?userId=0df3d28a-8b9a-4870-b69f-d92d10215662&eventId=d2803666-73b0-46b8-ab40-07fba894c1c2
+async function joinEvent(req, res) {
+    try {
+        event_logger.info("Joining event");
+        const { userId, eventId } = req.body;
+        console.log("Joining event: " + eventId + " " + userId);
+
+        const event = await prisma.event.findFirstOrThrow({
+            where: {
+                id: eventId
+            },
+            include: {
+                Participants: true
+            }
+        });
+
+        if (event.Participants.find(participant => participant.id === userId)) {
+            return res.status(400).json({ error: 'User already joined event' });
+        }
+
+        if (event.date < new Date()) {
+            return res.status(400).json({ error: 'Event already passed' });
+        }
+
+        await prisma.event.update({
+            where: {
+                id: eventId
+            },
+            data: {
+                Participants: {
+                    connect: {
+                        id: userId
+                    }
+                }
+            }
+        });
+
+        res.status(200).json({ message: 'User joined event successfully' });
+        event_logger.info("Joined successfully");
+    } catch (error) {
+        event_logger.error("Error joining event: " + error);
+        res.status(500).json({ error: 'Failed to join event' });
+    }
+}
+
+async function leaveEvent(req, res) {
+    try {
+        event_logger.info("Leaving event");
+        const { userId, eventId } = req.body;
+        console.log("Leaving event: " + eventId + " " + userId);
+
+        const event = await prisma.event.findFirstOrThrow({
+            where: {
+                id: eventId
+            },
+            include: {
+                Participants: true
+            }
+        });
+
+        if (!event.Participants.find(participant => participant.id === userId)) {
+            return res.status(400).json({ error: 'User not joined event' });
+        }
+
+        if (event.date < new Date()) {
+            return res.status(400).json({ error: 'Event already passed' });
+        }
+
+        await prisma.event.update({
+            where: {
+                id: eventId
+            },
+            data: {
+                Participants: {
+                    disconnect: {
+                        id: userId
+                    }
+                }
+            }
+        });
+
+        res.status(200).json({ message: 'User left event successfully' });
+        event_logger.info("Left successfully");
+    } catch (error) {
+        event_logger.error("Error leaving event: " + error);
+        res.status(500).json({ error: 'Failed to leave event' });
+    }
+}
+
+async function cancelEvent(req, res) {
+    try {
+        const { userId, eventId } = req.query;
+        console.log("Canceling event: " + eventId + " " + userId);
+
+        event_logger.info("Canceling event: " + eventId + " " + userId);
+
+        const event = await prisma.event.findFirstOrThrow({
+            where: {
+                id: eventId
+            },
+            include: {
+                createdBy: true
+            }
+        });
+
+        await prisma.event.delete({
+            where: {
+                id: eventId
+            }
+        });
+
+        console.log(response);
+
+        if (event.createdBy.id !== userId || event.date < new Date()) {
+            return res.status(400).json({ error: 'User not authorized to cancel event' });
+        }
+
+        res.status(200).json({ message: 'Event canceled successfully' });
+        event_logger.info("Canceled successfully");
+
+    } catch (error) {
+        event_logger.error("Error canceling event: " + error);
+        res.status(500).json({ error: 'Failed to cancel event' });
+    }
+}
+
+module.exports = { createEvent, getEventsByLocationAndArea, getEventById, getMyEvents, addAllSports, joinEvent, leaveEvent, cancelEvent }
+
 
 
