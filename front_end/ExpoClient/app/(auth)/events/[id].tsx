@@ -15,8 +15,6 @@ import { defaultStyles } from '../../../constants/Styles';
 import Chat from '../../../components/Chat';
 
 const EventPage = () => {
-  const user = useAuth().authState!.user!;
-
   const { authState, onLogout } = useAuth();
   const [event, setEvent] = useState<Event>();
 
@@ -26,6 +24,8 @@ const EventPage = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [check, setCheck] = useState<boolean>(true);
   const [owner, setOwner] = useState<boolean>(false);
+  const user = authState?.user!;
+  const token = authState?.token!;
 
   useEffect(() => {
     if (id) {
@@ -164,14 +164,12 @@ const EventPage = () => {
         </Animated.ScrollView>
         <Animated.View style={defaultStyles.footer}>
         <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-          { owner || !check ? (
           <TouchableOpacity 
             style={{ padding: '5%' }}
             onPress={() => setChatVisible(true)} >
             <Ionicons name='chatbubbles' color={Colors.grey} size={30} />
             <Text style={styles.description}>Chat</Text>
-          </TouchableOpacity> ) : <></>
-          }
+          </TouchableOpacity>
           {
             owner ? (
               <TouchableOpacity style={{ padding: '5%', alignItems: 'center' }} onPress={() => cancel()}>
@@ -192,7 +190,7 @@ const EventPage = () => {
         </View>
       </Animated.View>
       </View>
-      {isChatVisible && <Chat event={event} user={user} fullscreen={true} closeChat={() => setChatVisible(false)}/>}
+      {isChatVisible && <Chat event={event} user={user} fullscreen={true} closeChat={() => setChatVisible(false) } token={token}/>}
    </View>
   )
 };

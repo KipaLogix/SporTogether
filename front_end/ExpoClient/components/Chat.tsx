@@ -24,7 +24,7 @@ const Chat = ({event, user, fullscreen = false, closeChat, token}: Params) => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [isClosing, setIsClosing] = useState(false);
     const listRef = useRef<FlatList>(null);
-
+        
     useEffect(() => {
         console.log('Fetching messages for event: ', event.id);
         getMessages(event.id!)
@@ -95,7 +95,7 @@ const Chat = ({event, user, fullscreen = false, closeChat, token}: Params) => {
             console.log(error);
         }  
 
-        
+
         setNewMessage(''); 
     }
 
