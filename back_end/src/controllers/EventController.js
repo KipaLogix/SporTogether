@@ -106,8 +106,13 @@ const getEventsByLocationAndArea = async (req, res) => {
             },
         });
 
+        const eventsWithoutPasswords = events.map(event => {
+            event.createdBy.password = null;
+            return event;
+        });
+
         event_logger.info("Events fetched successfully");
-        res.status(200).json(events);
+        res.status(200).json(eventsWithoutPasswords);
     } catch (error) {
         event_logger.error("Error fetching events: " + error);
         res.status(500).json({ error: 'Failed to get events by location and area' });
@@ -129,6 +134,11 @@ const getEventById = async (req, res) => {
                 Participants: true,
                 Sport: true,
             },
+        });
+
+        event.createdBy.password = null;
+        event.Participants.forEach(participant => {
+            participant.password = null;
         });
 
         event_logger.info("Event fetched successfully");
@@ -188,6 +198,14 @@ async function getMyEvents(req, res) {
             }
             eventIds.add(event.id);
             return true;
+        });
+
+        const eventsWithoutPasswords = allEvents.map(event => {
+            event.createdBy.password = null;
+            event.Participants.forEach(participant => {
+                participant.password = null;
+            });
+            return event;
         });
 
 
@@ -351,7 +369,7 @@ async function cancelEvent(req, res) {
             }
         });
 
-        await prisma.event.delete({
+        const response = await prisma.event.delete({
             where: {
                 id: eventId
             }

@@ -56,12 +56,12 @@ enum Role {
 }
 
 model Message {
-  id        String   @id @default(uuid())
-  sender    User     @relation("SentMessages", fields: [senderId], references: [id])
-  senderId  String
-  event     Event    @relation("EventMessages", fields: [eventId], references: [id])
-  eventId   String
-  content   String
+  id       String @id @default(uuid())
+  sender   User   @relation("SentMessages", fields: [senderId], references: [id])
+  senderId String
+  event    Event  @relation("EventMessages", fields: [eventId], references: [id], onDelete: Cascade)
+  eventId  String
+  content  String
   createdAt DateTime @default(now())
 }
 
@@ -77,7 +77,7 @@ model Review {
 }
 
 model UserSettings {
-  user     User   @relation(fields: [userId], references: [id])
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId   String @id
   theme    String @default("light")
   language String @default("en")

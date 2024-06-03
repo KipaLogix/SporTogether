@@ -9,7 +9,7 @@ const event_logger = winston.createLogger({
         prettyPrint(),
         colorize(),
     ),
-    defaultMeta: { service: 'user-controller' },
+    defaultMeta: { service: 'event-controller' },
     transports: [
         // new winston.transports.Console(),
         new winston.transports.File({ filename: 'logs/event_controller_logs/all_logs.log', level: 'info' }),
