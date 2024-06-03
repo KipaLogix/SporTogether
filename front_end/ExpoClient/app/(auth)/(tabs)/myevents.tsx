@@ -10,6 +10,7 @@ import { getSports } from '../../../service/api/SportService';
 import { Sport } from '../../../interfaces/Sport';
 import { Event } from '../../../interfaces/Event';
 import EventsList from '../../../components/EventsList';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 interface Params {
   title: string;
@@ -41,10 +42,11 @@ const myevents = () => {
       console.error('Error fetching my events: ', error);
       throw error;
     });
-  }, []);
+  }, [refresh]);
 
   const handleCreateEvent = async ({title, description, date, sportId, longitude, latitude, userId} : Params) => {
-    await createEvent({title, description, date, sportId, longitude, latitude, userId});
+    const event = await createEvent({title, description, date, sportId, longitude, latitude, userId});
+    setEvents([...events, event]);
   };
 
   useEffect(() => {
@@ -64,9 +66,15 @@ const myevents = () => {
     });
   }, []);
 
+  const onRefreshChanged = () => {
+    setRefresh(refresh => refresh + 1);
+  }
+
   return (
     <View style={styles.container}>
-      <EventsList events={events} refresh={refresh} isBottomSheet={false} />
+      <GestureHandlerRootView>
+        <EventsList events={events} onRefreshChanged={onRefreshChanged} refresh={refresh} isBottomSheet={false} />
+      </GestureHandlerRootView>
       <CreateEvent
         isVisible={isCreateEventVisible}
         onClose={() => setCreateEventVisible(false)}

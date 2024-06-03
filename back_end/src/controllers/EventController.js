@@ -37,8 +37,11 @@ const createEvent = async (req, res) => {
                     connect: {
                         id: userId
                     }
-                }
+                },
             },
+            include: {
+                Sport: true,
+            }
         });
         event_logger.info("Event created successfully");
         res.status(201).json(event);

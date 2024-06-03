@@ -8,18 +8,23 @@ import { useMemo, useRef, useState } from 'react';
 
 interface Props {
     events: Event[];
+    refresh: number;
+    setRefresh: (refresh: number) => void;
 }
 
-const EventsBottomSheetList = ({ events }: Props) => {
+const EventsBottomSheetList = ({ events, refresh, setRefresh }: Props) => {
 
     const bottomSheetRef = useRef<BottomSheet>(null);
     const snapPoints = useMemo(() => ['10%', '100%'], []);
-    const [refresh, setRefresh] = useState<number>(0);
 
     const onShowMap = () => {
         bottomSheetRef.current?.collapse();
         setRefresh(refresh + 1);
     };
+
+    const onRefreshChanged = () => {
+        setRefresh(refresh + 1);
+    }
 
     return (
         <BottomSheet
@@ -30,7 +35,7 @@ const EventsBottomSheetList = ({ events }: Props) => {
             handleIndicatorStyle={{ backgroundColor: Colors.grey }}
             enablePanDownToClose={false}>
             <View style={styles.contentContainer}>
-                <EventsList events={events} refresh={refresh} isBottomSheet={true} />
+                <EventsList events={events} onRefreshChanged={onRefreshChanged} refresh={refresh} isBottomSheet={true} />
                 <View style={styles.absoluteView}>
                     <TouchableOpacity onPress={onShowMap} style={styles.btn}>
                         <Text style={{ color: '#fff' }}>Map</Text>
