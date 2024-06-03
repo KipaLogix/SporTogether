@@ -14,8 +14,7 @@ const EventsMap = ({ events, location }: Props) => {
 
 
     const onMarkerSelected = (event: Event) => {
-        // TODO: Implement navigation to event details
-        // router.push('/event/${event.id}'); // used to navigate to event details 
+        router.push(`/events/${event.id}`); // used to navigate to event details 
     };
     return (
         <MapView style={styles.pos}
