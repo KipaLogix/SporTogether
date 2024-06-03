@@ -30,7 +30,7 @@ const EventsBottomSheetList = ({ events }: Props) => {
             handleIndicatorStyle={{ backgroundColor: Colors.grey }}
             enablePanDownToClose={false}>
             <View style={styles.contentContainer}>
-                <EventsList events={events} />
+                <EventsList events={events} refresh={refresh} />
                 <View style={styles.absoluteView}>
                     <TouchableOpacity onPress={onShowMap} style={styles.btn}>
                         <Text style={{ color: '#fff' }}>Map</Text>
@@ -64,6 +64,7 @@ const styles = StyleSheet.create({
     sheetContainer: {
         backgroundColor: '#fff',
         elevation: 4,
+        borderRadius: 20,
         shadowColor: '#000',
         shadowOpacity: 0.3,
         shadowRadius: 4,

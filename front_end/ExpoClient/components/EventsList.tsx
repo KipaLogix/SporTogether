@@ -14,9 +14,10 @@ import { defaultStyles } from '../constants/Styles';
 
 interface Props {
   events: Event[];
+  refresh: number;
 }
 
-const EventsList = ({ events }: Props) => {
+const EventsList = ({ events, refresh }: Props) => {
   const [loading, setLoading] = useState(false);
   const [addresses, setAddresses] = useState<Record<string, string>>({});
   const listRef = useRef<BottomSheetFlatListMethods>(null);
@@ -31,7 +32,7 @@ const EventsList = ({ events }: Props) => {
       for (const event of events) {
         try {
           const address = await getAddressFromCoordinates(event.latitude ?? 0, event.longitude ?? 0);
-          newAddresses[event.id ?? 0 ] = address;
+          newAddresses[event.id ?? 0] = address;
         } catch (error) {
           newAddresses[event.id ?? 0] = 'Error fetching address';
         }
@@ -42,11 +43,16 @@ const EventsList = ({ events }: Props) => {
     };
 
     fetchAddresses().catch((error) => {
-        console.error('Error fetching addresses: ', error);
+      console.error('Error fetching addresses: ', error);
     });
   }, [events]);
 
-  
+  useEffect(() => {
+    if (refresh) {
+      listRef.current?.scrollToOffset({ offset: 0, animated: true });
+    }
+  }, [refresh]);
+
 
   const renderRow: ListRenderItem<Event> = ({ item }) => {
     const formattedDate = format(new Date(item.date), 'PPpp');
@@ -86,6 +92,7 @@ const EventsList = ({ events }: Props) => {
         data={loading ? [] : events}
         renderItem={renderRow}
         ref={listRef}
+        ListHeaderComponent={<Text style={styles.info}>{events.length} events</Text>}
       />
     </View>
   );
@@ -93,22 +100,23 @@ const EventsList = ({ events }: Props) => {
 
 const styles = StyleSheet.create({
 
-    event: {
-        padding: 16,
-        gap: 10,
-        marginVertical: 16,
-    },
-    image: {
-        width: '100%',
-        height: 300,
-        borderRadius: 10,
-        backgroundColor: 'gray',
-    },
-    info: {
-        textAlign: 'center',
-        fontSize: 16,
-        marginTop: 4,
-    },
+  event: {
+    padding: 16,
+    gap: 10,
+    marginVertical: 16,
+  },
+  image: {
+    width: '100%',
+    height: 300,
+    borderRadius: 10,
+    backgroundColor: 'gray',
+  },
+  info: {
+    textAlign: 'center',
+    fontSize: 16,
+    marginTop: 4,
+    marginBottom: 4,
+  },
 })
 
 export default EventsList;
