@@ -10,7 +10,7 @@ import { useNavigation } from 'expo-router';
 
 const messages = () => {
 
-  const { user } = useAuth().authState!;
+  const { user, token } = useAuth().authState!;
   const [events, setEvents] = React.useState<Event[]>([]);
   const [isChatOpen, setIsChatOpen] = React.useState(false);
   const [selectedEvent, setSelectedEvent] = React.useState<Event | null>(null);
@@ -69,43 +69,43 @@ const messages = () => {
 
 
   return isChatOpen ?
-    (
-      <Animated.View style={{ flex: 1, transform: [{ translateX: slideAnim }] }}>
-        <Chat event={selectedEvent!} user={user!} closeChat={handleCloseChat} />
-      </Animated.View>
-    ) : (
-      <View style={{ flex: 1 }}>
-        <ScrollView style={styles.container}
-          refreshControl={
+  (
+    <Animated.View style={{ flex: 1, transform: [{ translateX: slideAnim }] }}>
+      <Chat event={selectedEvent!} user={user!} closeChat={handleCloseChat} token={token} />
+    </Animated.View>
+  ) : (
+    <View style={{ flex: 1}}>
+      <ScrollView style={styles.container}
+        refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }>
-          {events.map((event) => (
-            <View key={event.id}>
-              <TouchableOpacity
-                style={styles.group}
-                onPress={() => handleOpenChat(event)}
-              >
-                {SportIcon(event.Sport!, Colors.grey, 40, false)}
-                <View style={{ flex: 1 }}>
-                  <Text>{event.title}</Text>
-                  <Text style={{ color: '#888' }}>
-                    {new Date(event.date).toLocaleString(undefined, {
-                      year: 'numeric',
-                      month: '2-digit',
-                      day: '2-digit',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      hour12: false,
-                      weekday: 'short',
-                    })}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-          ))}
-        </ScrollView>
-      </View>
-    )
+        {events.map((event) => (
+          <View key={event.id}>
+            <TouchableOpacity 
+            style={styles.group}
+            onPress={() => handleOpenChat(event)}
+            >
+              {SportIcon(event.Sport!, Colors.grey, 40, false)}
+              <View style={{flex: 1}}>
+                <Text>{event.title}</Text>
+                <Text style={{color: '#888'}}>
+                  {new Date(event.date).toLocaleString(undefined, {
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: false,
+                  weekday: 'short',
+                  })}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        ))}
+      </ScrollView>
+    </View>
+  )
 }
 
 const styles = StyleSheet.create({

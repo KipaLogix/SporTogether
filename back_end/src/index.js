@@ -5,6 +5,12 @@ const messageRoutes = require('./routes/MessageRoutes');
 const sportRoutes = require('./routes/SportRoutes');
 const cors = require('cors');
 require('dotenv').config();
+const http = require('http');
+const { Server } = require('socket.io');
+const requireAuthWebSocket = require('./middleware/requireAuthWebSocket');
+const { measureMemory } = require('vm');
+const handleNewConnection = require('./routes/ChatWebsocketRoute')
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -29,12 +35,20 @@ app.use((err, req, res, next) => {
     res.status(500).send('Something went wrong!');
 });
 
-// Use CORS middleware to allow requests from all origins
-app.use(cors({
-    origin: '*',
-}));
+const server = http.createServer(app);
+
+// Create websocket server
+const io = new Server(server, {
+    cors: {
+        origins: ['*'],
+    },
+});
+
+io.use(requireAuthWebSocket);
+
+io.on('connection', handleNewConnection);
 
 // Start the server
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

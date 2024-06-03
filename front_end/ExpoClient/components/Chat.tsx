@@ -8,22 +8,23 @@ import { Message } from '../interfaces/Message';
 import { User } from '../interfaces/User';
 import { Event } from '../interfaces/Event';
 import Modal from 'react-native-modal';
-
+import { initiateSocketConnection, sendMessage, disconnectSocket, subscribeToChat } from '../service/api/SocketService';
 
 interface Params {
     event: Event;
     user: User;
     fullscreen?: boolean;
     closeChat?: () => void;
+    token: string | null;
 }
 
-const Chat = ({event, user, fullscreen = false, closeChat}: Params) => {
+const Chat = ({event, user, fullscreen = false, closeChat, token}: Params) => {
     const navigation = useNavigation();
     const [newMessage, setNewMessage] = useState('');
     const [messages, setMessages] = useState<Message[]>([]);
     const [isClosing, setIsClosing] = useState(false);
     const listRef = useRef<FlatList>(null);
-        
+
     useEffect(() => {
         console.log('Fetching messages for event: ', event.id);
         getMessages(event.id!)
@@ -41,6 +42,15 @@ const Chat = ({event, user, fullscreen = false, closeChat}: Params) => {
                 </TouchableOpacity>
             ),
         })
+        initiateSocketConnection(token!, event.id!);
+        subscribeToChat((err : any,data : Message) => {
+            setMessages((prev: Message[]) => [...prev, data]);
+        })
+
+        return () => {
+            disconnectSocket(event.id!);
+        }
+
     }, [event.id]);
 
     useEffect(() => {
@@ -63,17 +73,34 @@ const Chat = ({event, user, fullscreen = false, closeChat}: Params) => {
     
     const handleSendMessage = () => {
         Keyboard.dismiss(); 
-        createMessage({
+
+        const message: Message = {
             senderId: user.id,
             eventId: event.id!,
             content: newMessage
+        }
+
+        sendMessage({message, roomName: event.id!}, (cb :any) => {
+            console.log(message);
         });
 
+        try {
+            message.sender = user;
+            message.createdAt = new Date();
+            setMessages((prev) => [
+                ...prev,
+                message,
+            ]);
+        } catch (error) {
+            console.log(error);
+        }  
+
+        
         setNewMessage(''); 
     }
 
     const renderMessage: ListRenderItem<Message> = ({item}) => {
-        const isUserMessage = JSON.stringify(item.sender) === JSON.stringify(user);
+        const isUserMessage = JSON.stringify(item.sender?.id) === JSON.stringify(user.id);
         return (
             <View style={[styles.messageContainer, isUserMessage? styles.userMessageContainer: styles.otherMessageContainer]}>
                 {item.content !== '' && <Text style={[styles.messageText, isUserMessage? styles.userMessageText: null]}>{item.content}</Text>}
