@@ -45,7 +45,8 @@ const myevents = () => {
   }, [refresh]);
 
   const handleCreateEvent = async ({title, description, date, sportId, longitude, latitude, userId} : Params) => {
-    await createEvent({title, description, date, sportId, longitude, latitude, userId});
+    const event = await createEvent({title, description, date, sportId, longitude, latitude, userId});
+    setEvents([...events, event]);
   };
 
   useEffect(() => {
