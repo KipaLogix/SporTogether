@@ -10,7 +10,7 @@ import { useNavigation } from 'expo-router';
 
 const messages = () => {
 
-  const { user } = useAuth().authState!;
+  const { user, token } = useAuth().authState!;
   const [events, setEvents] = React.useState<Event[]>([]);
   const [isChatOpen, setIsChatOpen] = React.useState(false);
   const [selectedEvent, setSelectedEvent] = React.useState<Event | null>(null);
@@ -65,7 +65,7 @@ const messages = () => {
   return isChatOpen ?
   (
     <Animated.View style={{ flex: 1, transform: [{ translateX: slideAnim }] }}>
-      <Chat event={selectedEvent!} user={user!} closeChat={handleCloseChat} />
+      <Chat event={selectedEvent!} user={user!} closeChat={handleCloseChat} token={token} />
     </Animated.View>
   ) : (
     <View style={{ flex: 1}}>
