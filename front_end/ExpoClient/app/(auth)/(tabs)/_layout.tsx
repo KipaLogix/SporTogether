@@ -25,11 +25,14 @@ const Layout = () => {
   const { authState, onLogout } = useAuth();
   
   return (
-    <Tabs screenOptions={{
+    <Tabs 
+    initialRouteName='explore'
+    backBehavior='history'
+    screenOptions={{
       tabBarActiveTintColor: Colors.primary,
       tabBarLabelStyle: {
         fontFamily: 'SpaceMono',
-      }
+      },
     }}>
 
       <Tabs.Screen name="explore" options={{
@@ -45,8 +48,9 @@ const Layout = () => {
           <Ionicons name='football' color={color} size={size} />
       }} />
       <Tabs.Screen name="messages" options={{
-        tabBarLabel: 'Messages',
-        headerTitle: 'Messages',
+        tabBarLabel: 'Chats',
+        headerTitle: 'Chats',
+        headerTitleAlign: 'center',
         tabBarIcon: ({ color, size }) =>
           <Ionicons name='chatbubbles' color={color} size={size} />
       }} />

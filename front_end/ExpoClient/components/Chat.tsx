@@ -6,30 +6,42 @@ import { getMessages } from '../service/api/MessageService';
 import { Ionicons } from '@expo/vector-icons';
 import { Message } from '../interfaces/Message';
 import { User } from '../interfaces/User';
+import { Event } from '../interfaces/Event';
+import Modal from 'react-native-modal';
 
 
 interface Params {
-    eventId: string;
-    eventTitle: string;
+    event: Event;
     user: User;
+    fullscreen?: boolean;
+    closeChat?: () => void;
 }
 
-const Chat = ({eventId, eventTitle, user}: Params) => {
+const Chat = ({event, user, fullscreen = false, closeChat}: Params) => {
     const navigation = useNavigation();
     const [newMessage, setNewMessage] = useState('');
     const [messages, setMessages] = useState<Message[]>([]);
-    const [keyboardHeight, setKeyboardHeight] = useState(0);
+    const [isClosing, setIsClosing] = useState(false);
     const listRef = useRef<FlatList>(null);
         
     useEffect(() => {
-        getMessages(eventId)
+        console.log('Fetching messages for event: ', event.id);
+        getMessages(event.id!)
             .then(setMessages)
             .catch((err) => {
                 alert('Error fetching messages: ' + err);
                 setMessages([]);
             });
-        navigation.setOptions({headerTitle: eventTitle})
-    }, [eventId]);
+        !fullscreen && navigation.setOptions({
+            headerTitle: event.title,
+            headerLeft: () => (
+                <TouchableOpacity style={styles.backButton} onPress={() => closeChat && closeChat()}>
+                    <Ionicons name='arrow-back-outline' style={styles.backIcon}/>
+                    <Text style={styles.backText}>Back</Text>
+                </TouchableOpacity>
+            ),
+        })
+    }, [event.id]);
 
     useEffect(() => {
         setTimeout(() => {
@@ -53,7 +65,7 @@ const Chat = ({eventId, eventTitle, user}: Params) => {
         Keyboard.dismiss(); 
         createMessage({
             senderId: user.id,
-            eventId: eventId,
+            eventId: event.id!,
             content: newMessage
         });
 
@@ -70,11 +82,23 @@ const Chat = ({eventId, eventTitle, user}: Params) => {
         );
     }
 
-    return (
-        <SafeAreaView style={{flex:1, backgroundColor:'#fff'}}>
+    const chatView = (
+        <>
+            {fullscreen && (
+            <View style={styles.header}>
+                <TouchableOpacity style={styles.backButton} onPress={() => {
+                    setIsClosing(true);
+                    setTimeout(() => closeChat && closeChat(), 300);
+                }}>
+                    <Ionicons name='arrow-back-outline' style={styles.backIcon}/>
+                    <Text style={styles.backText}>Back</Text>
+                </TouchableOpacity>
+                <Text style={styles.headerText}>{event.title}</Text>
+            </View>
+            )}
             <KeyboardAvoidingView style={styles.container} 
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            keyboardVerticalOffset={130}>
+            keyboardVerticalOffset={fullscreen ? 0: 130}>
                 <FlatList 
                     ref={listRef} 
                     ListFooterComponent={<View style={{ padding: 10 }}></View>} 
@@ -95,6 +119,23 @@ const Chat = ({eventId, eventTitle, user}: Params) => {
                     </View>
                 </View>
             </KeyboardAvoidingView>
+        </>
+    )
+    
+
+    return fullscreen? (
+        <Modal 
+        isVisible={fullscreen && !isClosing} 
+        animationIn='slideInUp'
+        animationOut='slideOutRight'
+        onSwipeComplete={() => closeChat && closeChat()}
+        swipeDirection={['right', 'left']}
+        style={{margin:0, justifyContent: 'flex-end'}}>
+            {chatView}
+        </Modal>
+    ) : (
+        <SafeAreaView style={{flex:1, backgroundColor:'#fff'}}>
+            {chatView}
         </SafeAreaView>
     );
 }
@@ -163,6 +204,31 @@ const styles = StyleSheet.create({
     timestamp: {
         fontSize: 12,
         color: 'c7c7c7',
+    },
+    header: {
+        height: 50,
+        backgroundColor: '#f8f5ea',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderBottomWidth: 1,
+        borderBottomColor: '#ddd',
+    },
+    headerText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+    backButton: {
+        position: 'absolute',
+        left: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    backIcon: {
+        fontSize: 20,
+    },
+    backText: {
+        fontSize: 16,
+        marginLeft: 5,
     },
 })
 
