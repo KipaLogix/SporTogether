@@ -50,6 +50,7 @@ export const getEventById = async (id: string): Promise<Event> => {
     }
 }
 
+
 export const joinEvent = async (eventId: string, userId: string): Promise<void> => {
     try {
         return await axios.post(`${EVENT_BASE_URL}/join`, {
@@ -91,3 +92,14 @@ export const cancelEvent = async (eventId: string, userId: string): Promise<void
         throw error;
     }
 }
+
+export const getMyEvents = async (userId: string): Promise<Event[]> => {
+    try {
+        const response = await axios.get(`${EVENT_BASE_URL}/myEvents/${userId}`);
+        return await response.data as Event[];
+    } catch (error) {
+        console.error('Error fetching my events: ', error);
+        throw error;
+    }
+}
+

@@ -1,4 +1,4 @@
-import { Slot, SplashScreen, Stack, useRouter, useSegments } from 'expo-router';
+import { Slot, SplashScreen, useRouter, useSegments } from 'expo-router';
 import { useEffect } from 'react';
 import { useFonts } from 'expo-font';
 import { useColorScheme } from 'react-native';
@@ -23,7 +23,7 @@ const InitialLayout = () => {
 
   }, [authState?.authenticated]);
 
-  return <Slot />
+  return <Slot/>
 }
 
 const RootLayoutNav = () => {

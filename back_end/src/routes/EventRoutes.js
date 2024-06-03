@@ -1,16 +1,15 @@
 const express = require('express');
 const router = express.Router();
 
-
-const { createEvent, getEventsByLocationAndArea, getEventById, addAllSports, joinEvent, leaveEvent, cancelEvent } = require('../controllers/EventController');
+const { createEvent, getEventsByLocationAndArea, getEventById, addAllSports, joinEvent, leaveEvent, cancelEvent, getMyEvents } = require('../controllers/EventController');
 
 const requireAuth = require('../middleware/requireAuth');
 
 router.use(requireAuth);
 
-router.route('/').post(createEvent);
+router.route('/').post(createEvent).get(getEventsByLocationAndArea);
 router.route('/:id').get(getEventById);
-router.route('/').get(getEventsByLocationAndArea);
+router.route('/myEvents/:userId').get(getMyEvents);
 router.route('/add').post(addAllSports);
 router.route('/join').post(joinEvent);
 router.route('/leave').post(leaveEvent);
