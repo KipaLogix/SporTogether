@@ -110,6 +110,8 @@ const CreateEvent = ({ isVisible, onClose, onCreate, sports, userId, userLocatio
           <DateTimePicker 
             value={date || new Date()}
             mode="date"
+            minimumDate={new Date()}
+            maximumDate={new Date(Date.now() + 14*24*60*60*1000)}
             onChange={(event, selected) => {
               if (event.type === 'dismissed') {
                 setShowDatePicker(false);
@@ -132,7 +134,31 @@ const CreateEvent = ({ isVisible, onClose, onCreate, sports, userId, userLocatio
                 setShowDatePicker(false);
                 return;
               }
-              const currentTime = selectedTime || date;
+              const currentTime = selectedTime || date!;
+              const currentHour = currentTime.getHours();
+              const currentMinutes = currentTime.getMinutes();
+
+              const isToday = date!.getDate() === new Date().getDate() &&
+              date!.getMonth() === new Date().getMonth() &&
+              date!.getFullYear() === new Date().getFullYear();
+
+              if (isToday && (currentHour < new Date().getHours() || (currentHour === new Date().getHours() && currentMinutes < new Date().getMinutes()))) {
+                Alert.alert(
+                  "Invalid Time", 
+                  "Please select a time in the future!", 
+                  [
+                    {
+                      text: "OK", 
+                    },
+                  ],
+                  { cancelable: false }
+                );
+                setShowTimePicker(false);
+                setShowDatePicker(false);
+                setDate(null);
+                return;
+              }
+
               setDate(currentTime);
               setShowTimePicker(false);
             }} 
