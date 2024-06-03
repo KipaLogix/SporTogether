@@ -42,7 +42,6 @@ const myevents = () => {
       console.error('Error fetching my events: ', error);
       throw error;
     });
-    console.log(refresh);
   }, [refresh]);
 
   const handleCreateEvent = async ({title, description, date, sportId, longitude, latitude, userId} : Params) => {
@@ -67,8 +66,6 @@ const myevents = () => {
   }, []);
 
   const onRefreshChanged = () => {
-    console.log("Refreshing MyEvents: " + refresh);
-    var newVal = refresh + 1;
     setRefresh(refresh => refresh + 1);
   }
 
