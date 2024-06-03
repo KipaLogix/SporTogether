@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 import { useFonts } from 'expo-font';
 import { useColorScheme } from 'react-native';
 import { AuthProvider, useAuth } from '../context/AuthContext';
-import { Gesture, GestureHandlerRootView } from 'react-native-gesture-handler';
 
 SplashScreen.preventAutoHideAsync();
 
