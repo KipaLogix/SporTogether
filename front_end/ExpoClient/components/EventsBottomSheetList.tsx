@@ -23,7 +23,6 @@ const EventsBottomSheetList = ({ events, refresh, setRefresh }: Props) => {
     };
 
     const onRefreshChanged = () => {
-        console.log("Refreshing Bottom: " + refresh);
         setRefresh(refresh + 1);
     }
 
