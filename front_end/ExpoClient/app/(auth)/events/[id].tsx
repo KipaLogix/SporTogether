@@ -164,12 +164,14 @@ const EventPage = () => {
         </Animated.ScrollView>
         <Animated.View style={defaultStyles.footer}>
         <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+          { owner || !check ? (
           <TouchableOpacity 
             style={{ padding: '5%' }}
             onPress={() => setChatVisible(true)} >
             <Ionicons name='chatbubbles' color={Colors.grey} size={30} />
             <Text style={styles.description}>Chat</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> ) : <></>
+          }
           {
             owner ? (
               <TouchableOpacity style={{ padding: '5%', alignItems: 'center' }} onPress={() => cancel()}>
