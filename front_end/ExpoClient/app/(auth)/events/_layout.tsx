@@ -1,6 +1,6 @@
 import React from 'react';
 import { Stack, router } from 'expo-router';
-import { Touchable, TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 const EventLayout = () => {

@@ -63,7 +63,7 @@ const EventsList = ({ events, refresh, isBottomSheet }: Props) => {
     const address = addresses[item.id ?? ''];
 
     return (
-      <Link href={`/events/${item.id}`} asChild>
+      <Link push href={`/events/${item.id}`} asChild>
         <TouchableOpacity>
           <Animated.View style={styles.event} entering={FadeInRight} exiting={FadeOutLeft}>
             <Image source={require('../assets/images/default-event-icon.png')} style={styles.image} />
