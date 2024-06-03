@@ -19,8 +19,6 @@ const messages = () => {
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    console.log(refreshing);
-    console.log("Updating messages");
     getUserById(user!.id)
       .then((u) => {
         console.log('User: ', u);
