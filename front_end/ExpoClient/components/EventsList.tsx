@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, ListRenderItem, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, ListRenderItem, TouchableOpacity, StyleSheet, Image, FlatList } from 'react-native';
 import { format } from 'date-fns';
 import { Link } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -15,12 +15,14 @@ import { defaultStyles } from '../constants/Styles';
 interface Props {
   events: Event[];
   refresh: number;
+  isBottomSheet: boolean;
 }
 
-const EventsList = ({ events, refresh }: Props) => {
+const EventsList = ({ events, refresh, isBottomSheet }: Props) => {
   const [loading, setLoading] = useState(false);
   const [addresses, setAddresses] = useState<Record<string, string>>({});
-  const listRef = useRef<BottomSheetFlatListMethods>(null);
+  const listRef = useRef<FlatList>(null);
+  const bottomSheetListRef = useRef<BottomSheetFlatListMethods>(null);
 
   useEffect(() => {
     console.log('Reload listings: ', events);
@@ -48,8 +50,10 @@ const EventsList = ({ events, refresh }: Props) => {
   }, [events]);
 
   useEffect(() => {
-    if (refresh) {
-      listRef.current?.scrollToOffset({ offset: 0, animated: true });
+    if (isBottomSheet) {
+      if (refresh) {
+        listRef.current?.scrollToOffset({ offset: 0, animated: true });
+      }
     }
   }, [refresh]);
 
@@ -88,12 +92,20 @@ const EventsList = ({ events, refresh }: Props) => {
 
   return (
     <View style={defaultStyles.container}>
-      <BottomSheetFlatList
-        data={loading ? [] : events}
-        renderItem={renderRow}
-        ref={listRef}
-        ListHeaderComponent={<Text style={styles.info}>{events.length} events</Text>}
-      />
+      {isBottomSheet ? (
+        <BottomSheetFlatList
+          data={loading ? [] : events}
+          renderItem={renderRow}
+          ref={bottomSheetListRef}
+          ListHeaderComponent={<Text style={styles.info}>{events.length} events</Text>}
+        />
+      ) : (
+        <FlatList
+          data={loading ? [] : events}
+          renderItem={renderRow}
+          ref={listRef}
+        />
+      )}
     </View>
   );
 };

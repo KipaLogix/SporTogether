@@ -1,4 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
+const { create } = require('domain');
 
 const prisma = new PrismaClient();
 
@@ -130,6 +131,56 @@ const getEventById = async (req, res) => {
     }
 };
 
+async function getMyEvents(req, res) {
+    event_logger.info("Getting user events");
+    try {
+
+        const { userId } = req.params;
+
+        const createdEvents = await prisma.event.findMany({
+            where: {
+                createdBy: {
+                    id: userId,
+                },
+            },
+            include: {
+                Participants: true,
+                createdBy: true,
+                Sport: true,
+            },
+        });
+
+        const joinedEvents = await prisma.event.findMany({
+            where: {
+                Participants: {
+                    some: {
+                        id: userId,
+                    },
+                },
+            },
+            include: {
+                Participants: true,
+                createdBy: true,
+                Sport: true,
+            },
+        });
+
+        const eventIds = new Set();
+        const allEvents = [...createdEvents, ...joinedEvents].filter(event => {
+            if (eventIds.has(event.id)) {
+                return false;
+            }
+            eventIds.add(event.id);
+            return true;
+        });
+
+        res.status(200).json(allEvents);
+        event_logger.info("User events fetched successfully");
+    } catch (error) {
+        event_logger.error("Error getting user events: " + error);
+        res.status(500).json({ error: 'Error getting user events' });
+    }
+}
 
 const addAllSports = async (req, res) => {
 
@@ -178,6 +229,6 @@ const addAllSports = async (req, res) => {
     }
 };
 
-module.exports = { createEvent, getEventsByLocationAndArea, getEventById, addAllSports }
+module.exports = { createEvent, getEventsByLocationAndArea, getEventById, addAllSports, getMyEvents }
 
 

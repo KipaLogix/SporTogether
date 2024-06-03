@@ -48,3 +48,13 @@ export const getEventById = async (id: string): Promise<Event> => {
         throw error;
     }
 }
+
+export const getMyEvents = async (userId: string): Promise<Event[]> => {
+    try {
+        const response = await axios.get(`${EVENT_BASE_URL}/myEvents/${userId}`);
+        return await response.data as Event[];
+    } catch (error) {
+        console.error('Error fetching my events: ', error);
+        throw error;
+    }
+}
