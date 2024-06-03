@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
     pos: {
         height: '100%',
         width: '100%',
+        marginTop: 21,
     },
 }
 );
