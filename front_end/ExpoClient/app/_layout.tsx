@@ -1,4 +1,4 @@
-import { Slot, SplashScreen, Stack, useRouter, useSegments } from 'expo-router';
+import { SplashScreen, Stack, useRouter, useSegments } from 'expo-router';
 import { useEffect } from 'react';
 import { useFonts } from 'expo-font';
 import { useColorScheme } from 'react-native';
@@ -7,7 +7,7 @@ import { AuthProvider, useAuth } from '../context/AuthContext';
 SplashScreen.preventAutoHideAsync();
 
 const InitialLayout = () => {
-  const { authState, onLogout } = useAuth();
+  const { authState } = useAuth();
   const segments = useSegments();
   const router = useRouter();
 
@@ -23,7 +23,28 @@ const InitialLayout = () => {
 
   }, [authState?.authenticated]);
 
-  return <Slot />
+  return(
+    <Stack>
+      <Stack.Screen
+      name="(auth)/(tabs)"
+      options={{
+        headerShown: false,
+      }}
+      />
+      <Stack.Screen
+      name="(auth)/events"
+      options={{
+        headerShown: false,
+      }}
+      />
+      <Stack.Screen
+      name="(public)"
+      options={{
+        headerShown: false,
+      }}
+      />
+    </Stack>
+  )
 }
 
 const RootLayoutNav = () => {

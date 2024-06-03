@@ -25,11 +25,14 @@ const Layout = () => {
   const { authState, onLogout } = useAuth();
   
   return (
-    <Tabs screenOptions={{
+    <Tabs 
+    initialRouteName='explore'
+    backBehavior='history'
+    screenOptions={{
       tabBarActiveTintColor: Colors.primary,
       tabBarLabelStyle: {
         fontFamily: 'SpaceMono',
-      }
+      },
     }}>
 
       <Tabs.Screen name="explore" options={{
