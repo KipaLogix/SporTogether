@@ -4,6 +4,30 @@ const prisma = new PrismaClient();
 
 const message_logger = require('../loggers/Loggers').message_logger;
 
+const createMessageWebSocket = async (req) => {
+    try {
+        message_logger.info("Creating a new message");
+        const {senderId, eventId, content} = req;
+        message_logger.info("Message data: " + JSON.stringify(req.body));
+        const message = await prisma.message.create({
+            data: {
+                senderId,
+                eventId,
+                content
+            },
+            include: {
+                sender: true,
+            },
+        });
+        message_logger.info("Message created successfully");
+        return message;
+    } catch (error) {
+        message_logger.error("Error creating message: " + error);
+        throw new Error(error.message);
+    }   
+}
+
+
 const createMessage = async (req, res) => {
     try {
         message_logger.info("Creating a new message");
@@ -55,4 +79,5 @@ const getMessagesByEventId = async (req, res) => {
 module.exports = {
     createMessage,
     getMessagesByEventId,
+    createMessageWebSocket,
 };
