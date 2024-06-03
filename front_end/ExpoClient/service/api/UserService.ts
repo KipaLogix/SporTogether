@@ -14,8 +14,8 @@ export const login = async (loginRequest: LoginRequest): Promise<AuthenticationR
     return await axios.post(`${USER_BASE_URL}/login`, loginRequest);
 }
 
-export const getUserById = async (id: number): Promise<User> => {
-    return await axios.get(`${USER_BASE_URL}/${id}`);
+export const getUserById = async (id: string): Promise<User> => {
+    return (await axios.get(`${USER_BASE_URL}/${id}`)).data;
 }
 
 export const getAllUsers = async(): Promise<User[]> => {
@@ -26,6 +26,6 @@ export const updateUser = async(user: User): Promise<User> => {
     return await axios.put(`${USER_BASE_URL}/${user.id}`, user);
 }
 
-export const deleteUser = async(id: number): Promise<void> => {
+export const deleteUser = async(id: string): Promise<void> => {
     return await axios.delete(`${USER_BASE_URL}/${id}`);
 }

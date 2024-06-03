@@ -1,14 +1,15 @@
-
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import CreateEvent from '../../../components/CreateEvent';
 import { FAB, Icon } from 'react-native-elements';
 import * as Animatable from 'react-native-animatable';
 import { useAuth } from '../../../context/AuthContext';
 import { getPermissionAndLocation } from '../../../service/utils/LocationService';
-import { createEvent } from '../../../service/api/EventService';
+import { createEvent, getMyEvents } from '../../../service/api/EventService';
 import { getSports } from '../../../service/api/SportService';
 import { Sport } from '../../../interfaces/Sport';
+import { Event } from '../../../interfaces/Event';
+import EventsList from '../../../components/EventsList';
 
 interface Params {
   title: string;
@@ -21,6 +22,7 @@ interface Params {
 }
 
 const myevents = () => {
+  const { authState } = useAuth();
   const [isCreateEventVisible, setCreateEventVisible] = useState(false);
   const [userLocation, setUserLocation] = useState<{
     latitude: number;
@@ -29,9 +31,20 @@ const myevents = () => {
     longitudeDelta: number;
   } | null>(null);
   const [sports, setSports] = useState<Sport[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [refresh, setRefresh] = useState(0);
 
-  const handleCreateEvent = async ({ title, description, date, sportId, longitude, latitude, userId }: Params) => {
-    const newEvent = await createEvent({ title, description, date, sportId, longitude, latitude, userId });
+  React.useEffect(() => {
+    getMyEvents(authState!.user!.id).then((events) => {
+      setEvents(events);
+    }).catch((error) => {
+      console.error('Error fetching my events: ', error);
+      throw error;
+    });
+  }, []);
+
+  const handleCreateEvent = async ({title, description, date, sportId, longitude, latitude, userId} : Params) => {
+    await createEvent({title, description, date, sportId, longitude, latitude, userId});
   };
 
   useEffect(() => {
@@ -53,7 +66,7 @@ const myevents = () => {
 
   return (
     <View style={styles.container}>
-      <Text>My Events</Text>
+      <EventsList events={events} refresh={refresh} isBottomSheet={false} />
       <CreateEvent
         isVisible={isCreateEventVisible}
         onClose={() => setCreateEventVisible(false)}

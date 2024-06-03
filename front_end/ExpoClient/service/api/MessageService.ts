@@ -1,9 +1,10 @@
+import { Message } from "../../interfaces/Message";
 import {MESSAGE_BASE_URL} from "./urls";
 import axios from 'axios';
 
-export const getMessages = async (eventId: number) => {
+export const getMessages = async (eventId: string): Promise<Message[]> => {
     try {
-        const response = await axios.get(MESSAGE_BASE_URL + eventId);
+        const response = await axios.get(`${MESSAGE_BASE_URL}/${eventId}`);
         return response.data;
     } catch (error) {
         console.error('Error fetching messages: ', error);
@@ -11,7 +12,7 @@ export const getMessages = async (eventId: number) => {
     }
 }
 
-export const createMessage = async (message: any) => {
+export const createMessage = async (message: Message): Promise<Message> => {
     try {
         const response = await axios.post(MESSAGE_BASE_URL, message);
         return response.data;
