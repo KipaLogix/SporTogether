@@ -1,7 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Event } from '../interfaces/Event';
 import EventsList from './EventsList';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Colors from '../constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import BottomSheet from '@gorhom/bottom-sheet';
