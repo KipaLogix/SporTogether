@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, FlatList, ListRenderItem, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, ListRenderItem, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { format } from 'date-fns';
 import { Link } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
