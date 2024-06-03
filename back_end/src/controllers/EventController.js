@@ -73,6 +73,9 @@ const getEventsByLocationAndArea = async (req, res) => {
                 gte: minLongitude,
                 lte: maxLongitude,
             },
+            date: {
+                gte: new Date(),
+            },
         };
 
         if (sportId != null) {
@@ -137,10 +140,15 @@ async function getMyEvents(req, res) {
 
         const { userId } = req.params;
 
+        const currentDate = new Date();
+
         const createdEvents = await prisma.event.findMany({
             where: {
                 createdBy: {
                     id: userId,
+                },
+                date: {
+                    gte: currentDate,
                 },
             },
             include: {
@@ -156,6 +164,9 @@ async function getMyEvents(req, res) {
                     some: {
                         id: userId,
                     },
+                },
+                date: {
+                    gte: currentDate,
                 },
             },
             include: {
@@ -173,6 +184,7 @@ async function getMyEvents(req, res) {
             eventIds.add(event.id);
             return true;
         });
+
 
         res.status(200).json(allEvents);
         event_logger.info("User events fetched successfully");
