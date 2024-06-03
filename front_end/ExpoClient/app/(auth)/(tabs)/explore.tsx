@@ -1,16 +1,14 @@
 import * as React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import { useEffect, useState } from 'react';
 
-import { List, PaperProvider } from 'react-native-paper';
+import { PaperProvider } from 'react-native-paper';
 
 import EventsMap from '../../../components/EventsMap';
 import { Event } from '../../../interfaces/Event';
 import { getEventsByLocation } from '../../../service/api/EventService';
 import { getPermissionAndLocation } from '../../../service/utils/LocationService';
 import { useAuth } from '../../../context/AuthContext';
-
-import EventsList from '../../../components/EventsList';
 
 import { Stack } from 'expo-router';
 import ExploreHeader from '../../../components/ExploreHeader';
@@ -32,6 +30,8 @@ const explore = () => {
   const [sports, setSports] = useState<Sport[]>([]);
 
   const [sportId, setSportId] = useState<string>('');
+
+  const [refresh, setRefresh] = useState<number>(0);
 
 
   useEffect(() => {
@@ -61,7 +61,7 @@ const explore = () => {
         alert(err);
       });
     }
-  }, [location, sportId]);
+  }, [location, sportId, refresh]);
 
   useEffect(() => {
     getSports().then((resp) => {
@@ -87,7 +87,7 @@ const explore = () => {
         />
         <GestureHandlerRootView style={{ flex: 1 }}>
           <EventsMap events={events} location={location} />
-          <EventsBottomSheetList events={events} />
+          <EventsBottomSheetList events={events} refresh={refresh} setRefresh={setRefresh} />
         </GestureHandlerRootView>
 
       </View>

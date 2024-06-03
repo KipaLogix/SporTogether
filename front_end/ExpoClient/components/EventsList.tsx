@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 import { View, Text, ListRenderItem, TouchableOpacity, StyleSheet, Image, FlatList } from 'react-native';
 import { format } from 'date-fns';
 import { Link } from 'expo-router';
@@ -11,18 +11,29 @@ import { getAddressFromCoordinates } from '../service/utils/LocationService';
 
 import { Event } from '../interfaces/Event';
 import { defaultStyles } from '../constants/Styles';
+import { RefreshControl } from 'react-native-gesture-handler';
 
 interface Props {
   events: Event[];
   refresh: number;
+  onRefreshChanged: () => void;
   isBottomSheet: boolean;
 }
 
-const EventsList = ({ events, refresh, isBottomSheet }: Props) => {
+const EventsList = ({ events, refresh, onRefreshChanged, isBottomSheet }: Props) => {
   const [loading, setLoading] = useState(false);
   const [addresses, setAddresses] = useState<Record<string, string>>({});
   const listRef = useRef<FlatList>(null);
   const bottomSheetListRef = useRef<BottomSheetFlatListMethods>(null);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+
+    onRefreshChanged();
+
+    setRefreshing(false);
+  }, []);
 
   useEffect(() => {
     console.log('Reload listings: ', events);
@@ -97,12 +108,22 @@ const EventsList = ({ events, refresh, isBottomSheet }: Props) => {
           data={loading ? [] : events}
           renderItem={renderRow}
           ref={bottomSheetListRef}
-          ListHeaderComponent={<Text style={styles.info}>{events.length} events</Text>}
+          ListHeaderComponent={
+            <View style={{flexDirection: 'row', flex: 1, alignSelf: 'center', alignItems: 'center'}}>
+              <Text style={styles.info}>{events.length} events</Text>
+              <TouchableOpacity style={{padding: 5}} onPress={onRefreshChanged}>
+                <Ionicons name="refresh" size={20} color={'#aaa'} />
+              </TouchableOpacity>
+            </View>
+        }
         />
       ) : (
         <FlatList
           data={loading ? [] : events}
           renderItem={renderRow}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
           ref={listRef}
         />
       )}
