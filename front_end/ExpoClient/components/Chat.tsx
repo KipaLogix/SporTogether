@@ -6,30 +6,36 @@ import { getMessages } from '../service/api/MessageService';
 import { Ionicons } from '@expo/vector-icons';
 import { Message } from '../interfaces/Message';
 import { User } from '../interfaces/User';
+import { Event } from '../interfaces/Event';
 
 
 interface Params {
-    eventId: string;
-    eventTitle: string;
+    event: Event;
     user: User;
 }
 
-const Chat = ({eventId, eventTitle, user}: Params) => {
+const Chat = ({event, user}: Params) => {
     const navigation = useNavigation();
     const [newMessage, setNewMessage] = useState('');
     const [messages, setMessages] = useState<Message[]>([]);
-    const [keyboardHeight, setKeyboardHeight] = useState(0);
     const listRef = useRef<FlatList>(null);
         
     useEffect(() => {
-        getMessages(eventId)
+        getMessages(event.id!)
             .then(setMessages)
             .catch((err) => {
                 alert('Error fetching messages: ' + err);
                 setMessages([]);
             });
-        navigation.setOptions({headerTitle: eventTitle})
-    }, [eventId]);
+        navigation.setOptions({
+            headerTitle: event.title,
+            headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+            ),
+        })
+    }, [event.id]);
 
     useEffect(() => {
         setTimeout(() => {
@@ -53,7 +59,7 @@ const Chat = ({eventId, eventTitle, user}: Params) => {
         Keyboard.dismiss(); 
         createMessage({
             senderId: user.id,
-            eventId: eventId,
+            eventId: event.id!,
             content: newMessage
         });
 

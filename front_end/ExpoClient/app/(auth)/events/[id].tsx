@@ -11,7 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../../context/AuthContext';
 import { defaultStyles } from '../../../constants/Styles';
 const EventPage = () => {
-  const { authState, onLogout } = useAuth();
+  const user = useAuth().authState!.user!;
   const [event, setEvent] = useState<Event | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
   const [address, setAddress] = useState<string | null>(null);
@@ -103,7 +103,7 @@ const EventPage = () => {
               <Text style={styles.description}>Chat</Text>
             </TouchableOpacity>
           </Link>
-          {event.Participants?.findIndex((participant) => participant.id === authState?.user?.id) === -1 ? (
+          {event.Participants?.findIndex((participant) => participant.id === user.id) === -1 ? (
             <Link href={`/`} asChild style={{}}>
               <TouchableOpacity style={{ padding: '5%' }} >
                 <Ionicons name='checkmark' color={Colors.grey} size={30} />
