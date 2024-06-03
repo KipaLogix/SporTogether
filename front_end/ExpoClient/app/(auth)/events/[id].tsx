@@ -1,21 +1,24 @@
-import { View, Text, StyleSheet, Dimensions, ActivityIndicator, TouchableOpacity, } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, ActivityIndicator, TouchableOpacity, Alert, } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { Link, useLocalSearchParams } from 'expo-router'
+import { Link, router, useLocalSearchParams } from 'expo-router'
 import Animated, { SlideInDown, SlideInUp, interpolate, useAnimatedRef, useAnimatedStyle, useScrollViewOffset } from 'react-native-reanimated'
 import Colors from '../../../constants/Colors';
-import { getEventById } from '../../../service/api/EventService';
+import { cancelEvent, getEventById, joinEvent, leaveEvent } from '../../../service/api/EventService';
 import { SportIcon } from '../../../components/SportIcon';
 import { Event } from '../../../interfaces/Event';
 import { getAddressFromCoordinates } from '../../../service/utils/LocationService';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../../context/AuthContext';
 import { defaultStyles } from '../../../constants/Styles';
+
 const EventPage = () => {
   const { authState, onLogout } = useAuth();
-  const [event, setEvent] = useState<Event | undefined>(undefined);
+  const [event, setEvent] = useState<Event>();
   const [loading, setLoading] = useState<boolean>(true);
   const [address, setAddress] = useState<string | null>(null);
   const { id } = useLocalSearchParams<{ id: string }>();
+  const [check, setCheck] = useState<boolean>(true);
+  const [owner, setOwner] = useState<boolean>(false);
 
 
 
@@ -29,6 +32,12 @@ const EventPage = () => {
             fetchAddress(resp_event.latitude ?? 0, resp_event.longitude ?? 0).then().catch((error) => {
               throw new Error('Error fetching address: ' + error);
             });
+            if (resp_event.Participants?.findIndex((participant) => participant.id === authState?.user?.id) !== -1) {
+              setCheck(false);
+            }
+            if (resp_event.createdBy?.id === authState?.user?.id) {
+              setOwner(true);
+            }
           } else {
             throw new Error('Event is undefined');
           }
@@ -41,6 +50,58 @@ const EventPage = () => {
         });
     }
   }, []);
+
+  const join = async () => {
+    if (authState?.user) {
+
+      joinEvent(id!, authState.user.id).then((resp) => {
+        setCheck(false);
+        alert('Successfully joined event!');
+      }).catch((error) => {
+        console.error('Error joining event: ', error);
+      });
+    }
+  }
+
+  const leave = async () => {
+    if (authState?.user) {
+
+      leaveEvent(id!, authState.user.id).then((resp) => {
+        setCheck(true);
+        alert('Successfully left event!');
+      }).catch((error) => {
+        console.error('Error leaving event: ', error);
+      });
+    }
+  }
+
+  const cancel = async () => {
+    if (authState?.user) {
+      const confirm = await new Promise((resolve) => {
+        Alert.alert(
+          'Confirmation',
+          'Are you sure you want to cancel the event?',
+          [
+            { text: 'Cancel', onPress: () => resolve(false) },
+            { text: 'Confirm', onPress: () => resolve(true) },
+          ],
+          { cancelable: false }
+        );
+      });
+
+      if (confirm) {
+        cancelEvent(id!, authState.user.id)
+          .then((resp) => {
+            setCheck(true);
+            alert('Event canceled successfully!');
+            router.back();
+          })
+          .catch((error) => {
+            console.error('Error canceling event: ', error);
+          });
+      }
+    }
+  }
 
   const fetchAddress = async (lat: number, lon: number) => {
     const address = await getAddressFromCoordinates(lat, lon);
@@ -97,25 +158,27 @@ const EventPage = () => {
       </Animated.ScrollView>
       <Animated.View style={defaultStyles.footer}>
         <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-          <Link href={`/`} asChild style={{}}>
-            <TouchableOpacity style={{ padding: '5%' }} >
-              <Ionicons name='chatbubbles' color={Colors.grey} size={30} />
-              <Text style={styles.description}>Chat</Text>
-            </TouchableOpacity>
-          </Link>
-          {event.Participants?.findIndex((participant) => participant.id === authState?.user?.id) === -1 ? (
-            <Link href={`/`} asChild style={{}}>
-              <TouchableOpacity style={{ padding: '5%' }} >
+          <TouchableOpacity style={{ padding: '5%' }} >
+            <Ionicons name='chatbubbles' color={Colors.grey} size={30} />
+            <Text style={styles.description}>Chat</Text>
+          </TouchableOpacity>
+          {
+            owner ? (
+              <TouchableOpacity style={{ padding: '5%', alignItems: 'center' }} onPress={() => cancel()}>
+                <Ionicons name='trash' color={Colors.grey} size={30} />
+                <Text style={styles.description}>Cancel</Text>
+              </TouchableOpacity>
+            ) : check ? (
+              <TouchableOpacity style={{ padding: '5%', alignItems: 'center' }} onPress={() => join()}>
                 <Ionicons name='checkmark' color={Colors.grey} size={30} />
                 <Text style={styles.description}>Join</Text>
               </TouchableOpacity>
-            </Link>) : (
-            <Link href={`/`} asChild style={{}}>
-              <TouchableOpacity style={{ padding: '5%' }} >
+            ) : (
+              <TouchableOpacity style={{ padding: '5%', alignItems: 'center' }} onPress={() => leave()}>
                 <Ionicons name='close' color={Colors.grey} size={30} />
                 <Text style={styles.description}>Leave</Text>
               </TouchableOpacity>
-            </Link>)}
+            )}
         </View>
       </Animated.View>
     </View>

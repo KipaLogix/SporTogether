@@ -1,6 +1,7 @@
 import { EVENT_BASE_URL } from './urls';
 import { Event } from '../../interfaces/Event';
 import axios from 'axios';
+import { Paragraph } from 'react-native-paper';
 
 interface Params {
     title: string;
@@ -45,6 +46,48 @@ export const getEventById = async (id: string): Promise<Event> => {
         return await response.data;
     } catch (error) {
         console.error('Error fetching event by id: ', error);
+        throw error;
+    }
+}
+
+export const joinEvent = async (eventId: string, userId: string): Promise<void> => {
+    try {
+        return await axios.post(`${EVENT_BASE_URL}/join`, {
+            eventId: eventId,
+            userId: userId
+        });
+    } catch (error) {
+        console.error('Error joining event: ', error);
+        throw error;
+    }
+}
+
+export const leaveEvent = async (eventId: string, userId: string): Promise<void> => {
+    try {
+        return await axios.post(`${EVENT_BASE_URL}/leave`, {
+            eventId: eventId,
+            userId: userId
+        });
+    } catch (error) {
+        console.error('Error leaving event: ', error);
+        throw error;
+    }
+}
+
+
+export const cancelEvent = async (eventId: string, userId: string): Promise<void> => {
+    try {
+        console.log('Cancelling event: ', eventId, userId);
+        axios.delete(`${EVENT_BASE_URL}/cancel`, {
+            params: {
+                eventId: eventId,
+                userId: userId
+            }
+        });
+
+        return;
+    } catch (error) {
+        console.error('Error cancelling event: ', error);
         throw error;
     }
 }
