@@ -54,7 +54,7 @@ async function createUser(username, email, password) {
         const newUser = await prisma.user.create({
             data: { username, email, password: hashedPassword },
         });
-        
+
         user_logger.info("User data: " + JSON.stringify(newUser));
         user_logger.info("User created successfully");
         return newUser;
@@ -89,7 +89,7 @@ async function updateUser(req, res) {
         message_logger.info("User data: " + JSON.stringify(req.body));
         const updatedUser = await prisma.user.update({
             where: { id: userId },
-            data: { username, email, password, first_name, last_name, city, country, latitude, longitude},
+            data: { username, email, password, first_name, last_name, city, country, latitude, longitude },
         });
 
         user_logger.info("User updated successfully");
@@ -162,7 +162,7 @@ async function loginUser(req, res) {
         const user = await getUserByCredentials(email, password);
         user_logger.info("User data: " + JSON.stringify(user));
         // create token
-        const token = createToken({...user, password: null});
+        const token = createToken({ ...user, password: null });
 
         user_logger.info("User logged in successfully");
         res.status(201).json({ token });
@@ -181,7 +181,7 @@ async function registerUser(req, res) {
         const newUser = await createUser(username, email, password);
         user_logger.info("User data: " + JSON.stringify(newUser));
         // create token
-        const token = createToken({...newUser, password: null});
+        const token = createToken({ ...newUser, password: null });
 
         user_logger.info("User registered successfully");
         res.status(201).json({ token });
