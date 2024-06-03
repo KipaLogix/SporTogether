@@ -79,7 +79,7 @@ const explore = () => {
 
     <PaperProvider>
 
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, marginTop: 20 }}>
         <Stack.Screen
           options={{
             header: () => <ExploreHeader onSportChanged={onDataChanged} sports={sports} />,
