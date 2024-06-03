@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, SafeAreaView, Text, StyleSheet, KeyboardAvoidingView, Platform, TextInput, TouchableOpacity, ListRenderItem, FlatList, Keyboard } from 'react-native';
-import { useNavigation, useRouter } from 'expo-router';
+import { useNavigation } from 'expo-router';
 import { createMessage } from '../service/api/MessageService';
 import { getMessages } from '../service/api/MessageService';
 import { Ionicons } from '@expo/vector-icons';
@@ -13,11 +13,11 @@ import Modal from 'react-native-modal';
 interface Params {
     event: Event;
     user: User;
-    fullscreen: boolean;
+    fullscreen?: boolean;
     closeChat?: () => void;
 }
 
-const Chat = ({event, user, fullscreen, closeChat}: Params) => {
+const Chat = ({event, user, fullscreen = false, closeChat}: Params) => {
     const navigation = useNavigation();
     const [newMessage, setNewMessage] = useState('');
     const [messages, setMessages] = useState<Message[]>([]);
@@ -34,6 +34,12 @@ const Chat = ({event, user, fullscreen, closeChat}: Params) => {
             });
         !fullscreen && navigation.setOptions({
             headerTitle: event.title,
+            headerLeft: () => (
+                <TouchableOpacity style={styles.backButton} onPress={() => closeChat && closeChat()}>
+                    <Ionicons name='arrow-back-outline' style={styles.backIcon}/>
+                    <Text style={styles.backText}>Back</Text>
+                </TouchableOpacity>
+            ),
         })
     }, [event.id]);
 

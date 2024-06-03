@@ -67,11 +67,22 @@ async function getUserById(req, res) {
     user_logger.info("Fetching user by ID");
     const userId = req.params.id;
     try {
-        const user = await prisma.user.findUnique({ where: { id: userId } });
+        const user = await prisma.user.findUnique({ 
+            where: { id: userId }, 
+            include: {Participations:
+                {
+                    include: {
+                        Sport: true
+                    }
+                }
+            } 
+        });
         user_logger.info("User fetched successfully");
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
+        
+        user.password = null;
 
         user_logger.info("User data: " + JSON.stringify(user));
         res.json(user);

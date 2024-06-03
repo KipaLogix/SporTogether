@@ -120,15 +120,7 @@ const EventPage = () => {
           </View>
         </Animated.View>
       </View>
-      {/* <Animated.View style={{
-        transform: [{ translateY: chatPosition.interpolate({ inputRange: [0, 1], outputRange: [0, -screenHeight] }) }],
-        position: 'absolute', 
-        bottom: 0, 
-        width: '100%',
-        height: '100%'
-    }}> */}
       {isChatVisible && <Chat event={event} user={user} fullscreen={true} closeChat={() => setChatVisible(false)}/>}
-    {/* </Animated.View> */}
    </View>
   )
 };
