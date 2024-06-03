@@ -1,9 +1,12 @@
+
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, FlatList, ListRenderItem, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, ListRenderItem, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { format } from 'date-fns';
 import { Link } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeInRight, FadeOutLeft } from 'react-native-reanimated';
+import { BottomSheetFlatList, BottomSheetFlatListMethods } from '@gorhom/bottom-sheet';
+
 import { getAddressFromCoordinates } from '../service/utils/LocationService';
 
 import { Event } from '../interfaces/Event';
@@ -11,13 +14,13 @@ import { defaultStyles } from '../constants/Styles';
 
 interface Props {
   events: Event[];
-  sportCategoryId: string;
+  refresh: number;
 }
 
-const EventsList = ({ events, sportCategoryId }: Props) => {
+const EventsList = ({ events, refresh }: Props) => {
   const [loading, setLoading] = useState(false);
   const [addresses, setAddresses] = useState<Record<string, string>>({});
-  const listRef = useRef<FlatList>(null);
+  const listRef = useRef<BottomSheetFlatListMethods>(null);
 
   useEffect(() => {
     console.log('Reload listings: ', events);
@@ -29,7 +32,7 @@ const EventsList = ({ events, sportCategoryId }: Props) => {
       for (const event of events) {
         try {
           const address = await getAddressFromCoordinates(event.latitude ?? 0, event.longitude ?? 0);
-          newAddresses[event.id ?? 0 ] = address;
+          newAddresses[event.id ?? 0] = address;
         } catch (error) {
           newAddresses[event.id ?? 0] = 'Error fetching address';
         }
@@ -40,11 +43,16 @@ const EventsList = ({ events, sportCategoryId }: Props) => {
     };
 
     fetchAddresses().catch((error) => {
-        console.error('Error fetching addresses: ', error);
+      console.error('Error fetching addresses: ', error);
     });
-  }, [sportCategoryId, events]);
+  }, [events]);
 
-  
+  useEffect(() => {
+    if (refresh) {
+      listRef.current?.scrollToOffset({ offset: 0, animated: true });
+    }
+  }, [refresh]);
+
 
   const renderRow: ListRenderItem<Event> = ({ item }) => {
     const formattedDate = format(new Date(item.date), 'PPpp');
@@ -74,21 +82,24 @@ const EventsList = ({ events, sportCategoryId }: Props) => {
           </Animated.View>
         </TouchableOpacity>
       </Link>
+
     );
   };
 
   return (
     <View style={defaultStyles.container}>
-      <FlatList
+      <BottomSheetFlatList
         data={loading ? [] : events}
         renderItem={renderRow}
         ref={listRef}
+        ListHeaderComponent={<Text style={styles.info}>{events.length} events</Text>}
       />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+
   event: {
     padding: 16,
     gap: 10,
@@ -100,6 +111,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: 'gray',
   },
-});
+  info: {
+    textAlign: 'center',
+    fontSize: 16,
+    marginTop: 4,
+    marginBottom: 4,
+  },
+})
 
 export default EventsList;
+
