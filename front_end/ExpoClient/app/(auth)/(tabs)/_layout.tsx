@@ -44,6 +44,7 @@ const Layout = () => {
       <Tabs.Screen name="myevents" options={{
         tabBarLabel: 'My Events',
         headerTitle: 'My Events',
+        headerTitleAlign: 'center',
         tabBarIcon: ({ color, size }) =>
           <Ionicons name='football' color={color} size={size} />
       }} />
@@ -57,9 +58,10 @@ const Layout = () => {
 
       <Tabs.Screen name="profile" options={{
         headerTitle: 'My Profile',
+        headerTitleAlign: 'center',
         tabBarIcon: ({ color, size }) => <Ionicons name="person-outline" size={size} color={color} />,
         tabBarLabel: 'My Profile',
-        headerRight: () => <Button onPress={onLogout} title="Sign Out" />,
+        // headerRight: () => <Button onPress={onLogout} title="Sign Out" />,
       }}
         redirect={!authState?.authenticated}
       />
