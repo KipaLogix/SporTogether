@@ -149,7 +149,7 @@ Contributions are welcome! Please follow these steps:
 If you have any questions or suggestions, please feel free to contact us at any of the below:
 - [bacter.cris1@gmail.com](mailto:bacter.cris1@gmail.com)
 - [amarietiberiu@yahoo.com](mailto:amarietiberiu@yahoo.com)
-- [fb422004@gmail.com](mailto:fb422004@gmail.com)
+- [florin422004@yahoo.com](mailto:florin422004@yahoo.com)
 - [domibacsro@gmail.com](mailto:domibacsro@gmail.com).
 
 ---
