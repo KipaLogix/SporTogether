@@ -1,5 +1,5 @@
 
-import { View, Text, StyleSheet, Dimensions, ActivityIndicator, TouchableOpacity, Animated, Alert } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, ActivityIndicator, TouchableOpacity, Animated, Alert, Modal } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Link, useLocalSearchParams, router } from 'expo-router'
 import { SlideInDown, SlideInUp, interpolate, useAnimatedRef, useAnimatedStyle, useScrollViewOffset } from 'react-native-reanimated'
@@ -13,6 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../../context/AuthContext';
 import { defaultStyles } from '../../../constants/Styles';
 import Chat from '../../../components/Chat';
+import { User } from '../../../interfaces/User';
 
 const EventPage = () => {
   const { authState, onLogout } = useAuth();
@@ -26,6 +27,8 @@ const EventPage = () => {
   const [owner, setOwner] = useState<boolean>(false);
   const user = authState?.user!;
   const token = authState?.token!;
+  const [modalVisible, setModalVisible] = useState(false);
+  const [users, setUsers] = useState<User[] | []>([]);
 
   useEffect(() => {
     if (id) {
@@ -33,6 +36,7 @@ const EventPage = () => {
         .then((resp_event) => {
           console.log('Event useEffect: ', resp_event);
           setEvent(resp_event);
+          setUsers(resp_event.Participants!);
           if (resp_event !== undefined) {
             fetchAddress(resp_event.latitude ?? 0, resp_event.longitude ?? 0).then().catch((error) => {
               throw new Error('Error fetching address: ' + error);
@@ -163,35 +167,66 @@ const EventPage = () => {
           </View>
         </Animated.ScrollView>
         <Animated.View style={defaultStyles.footer}>
-        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-          <TouchableOpacity 
-            style={{ padding: '5%' }}
-            onPress={() => setChatVisible(true)} >
-            <Ionicons name='chatbubbles' color={Colors.grey} size={30} />
-            <Text style={styles.description}>Chat</Text>
-          </TouchableOpacity>
-          {
-            owner ? (
-              <TouchableOpacity style={{ padding: '5%', alignItems: 'center' }} onPress={() => cancel()}>
-                <Ionicons name='trash' color={Colors.grey} size={30} />
-                <Text style={styles.description}>Cancel</Text>
-              </TouchableOpacity>
-            ) : check ? (
-              <TouchableOpacity style={{ padding: '5%', alignItems: 'center' }} onPress={() => join()}>
-                <Ionicons name='checkmark' color={Colors.grey} size={30} />
-                <Text style={styles.description}>Join</Text>
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity style={{ padding: '5%', alignItems: 'center' }} onPress={() => leave()}>
-                <Ionicons name='close' color={Colors.grey} size={30} />
-                <Text style={styles.description}>Leave</Text>
-              </TouchableOpacity>
-            )}
-        </View>
-      </Animated.View>
+          <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+            <TouchableOpacity 
+              style={{ padding: '5%' , alignItems: 'center'}}
+              onPress={() => setChatVisible(true)} >
+              <Ionicons name='chatbubbles' color={Colors.grey} size={30} />
+              <Text style={styles.description}>Chat</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={{ padding: '5%', alignItems: 'center'}}
+              onPress={() => setModalVisible(true)} >
+              <Ionicons name='people' color={Colors.grey} size={30} />
+              <Text style={styles.description}>Members</Text>
+            </TouchableOpacity>
+            {
+              owner ? (
+                <TouchableOpacity style={{ padding: '5%', alignItems: 'center' }} onPress={() => cancel()}>
+                  <Ionicons name='trash' color={Colors.grey} size={30} />
+                  <Text style={styles.description}>Cancel</Text>
+                </TouchableOpacity>
+              ) : check ? (
+                <TouchableOpacity style={{ padding: '5%', alignItems: 'center' }} onPress={() => join()}>
+                  <Ionicons name='checkmark' color={Colors.grey} size={30} />
+                  <Text style={styles.description}>Join</Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity style={{ padding: '5%', alignItems: 'center' }} onPress={() => leave()}>
+                  <Ionicons name='close' color={Colors.grey} size={30} />
+                  <Text style={styles.description}>Leave</Text>
+                </TouchableOpacity>
+              )}
+          </View>
+        </Animated.View>
       </View>
       {isChatVisible && <Chat event={event} user={user} fullscreen={true} closeChat={() => setChatVisible(false) } token={token}/>}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Members of the event</Text>
+            {users.map((user, index) => (
+              <Text key={index} style={styles.memberName}>{user.username}</Text>
+            ))}
+
+            <TouchableOpacity
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => setModalVisible(!modalVisible)}
+            >
+              <Text style={styles.textStyle}>Hide Members</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
    </View>
+   
   )
 };
 
@@ -246,6 +281,49 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 16,
     fontFamily: 'SpaceMono',
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2
+  },
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center"
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+    fontFamily: 'SpaceMonoBold',
+  },
+  memberName: {
+    fontSize: 16,
+    marginBottom: 10,
   },
 })
 
