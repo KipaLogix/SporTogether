@@ -63,9 +63,9 @@ Sportogether is designed to bring sports enthusiasts together by allowing them t
 
 3. Create a `.env` file in the `backend` directory and add your environment variables:
     ```env
-    DATABASE_URL="postgresql://postgres:postgres@localhost:5432/SporTogether?schema=public"
-    PORT=3001
-    SECRET=q3049h8gfhq30n9fa3w90vnh08hN89029329@J!E$
+    DATABASE_URL="postgresql://[YOUR_SERVER_USERNAME]:[YOUR_SERVER_PASSWORD]@localhost:[YOUR_SERVER_PORT]/[YOUR_DATABASE_NAME]?schema=public"
+    PORT=[YOUR_PORT]
+    SECRET=[YOUR_SECRET_STRING]
     ```
 4. Initialize Prisma and run migrations:
    ```bash
@@ -146,7 +146,11 @@ Contributions are welcome! Please follow these steps:
 
 ## Contact
 
-If you have any questions or suggestions, please feel free to contact us at [domibacsro@gmail.com](mailto:domibacsro@gmail.com).
+If you have any questions or suggestions, please feel free to contact us at any of the below:
+- [bacter.cris1@gmail.com](mailto:bacter.cris1@gmail.com)
+- [amarietiberiu@yahoo.com](mailto:amarietiberiu@yahoo.com)
+- [fb422004@gmail.com](mailto:fb422004@gmail.com)
+- [domibacsro@gmail.com](mailto:domibacsro@gmail.com).
 
 ---
 
