@@ -4,10 +4,9 @@ const prisma = new PrismaClient();
 const bcrypt = require('bcrypt');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
-const { resolveTypeReferenceDirective } = require('typescript');
 
 const createToken = (id) => {
-    return jwt.sign({ id }, process.env.SECRET, { expiresIn: '1h' });
+    return jwt.sign({ id }, process.env.SECRET, { expiresIn: '1d' });
 }
 
 const ENCRYPTION_SALT = 10;
@@ -55,7 +54,7 @@ async function createUser(username, email, password) {
         const newUser = await prisma.user.create({
             data: { username, email, password: hashedPassword },
         });
-        
+
         user_logger.info("User data: " + JSON.stringify(newUser));
         user_logger.info("User created successfully");
         return newUser;
@@ -68,11 +67,22 @@ async function getUserById(req, res) {
     user_logger.info("Fetching user by ID");
     const userId = req.params.id;
     try {
-        const user = await prisma.user.findUnique({ where: { id: userId } });
+        const user = await prisma.user.findUnique({ 
+            where: { id: userId }, 
+            include: {Participations:
+                {
+                    include: {
+                        Sport: true
+                    }
+                }
+            } 
+        });
         user_logger.info("User fetched successfully");
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
+        
+        user.password = null;
 
         user_logger.info("User data: " + JSON.stringify(user));
         res.json(user);
@@ -90,7 +100,7 @@ async function updateUser(req, res) {
         message_logger.info("User data: " + JSON.stringify(req.body));
         const updatedUser = await prisma.user.update({
             where: { id: userId },
-            data: { username, email, password, first_name, last_name, city, country, latitude, longitude},
+            data: { username, email, password, first_name, last_name, city, country, latitude, longitude },
         });
 
         user_logger.info("User updated successfully");
@@ -163,10 +173,10 @@ async function loginUser(req, res) {
         const user = await getUserByCredentials(email, password);
         user_logger.info("User data: " + JSON.stringify(user));
         // create token
-        const token = createToken(user.id);
+        const token = createToken({ ...user, password: null });
 
         user_logger.info("User logged in successfully");
-        res.status(201).json({ token, user });
+        res.status(201).json({ token });
     } catch (e) {
         user_logger.error("Error logging in user: " + e);
         res.status(400).json({ error: e.message });
@@ -182,7 +192,7 @@ async function registerUser(req, res) {
         const newUser = await createUser(username, email, password);
         user_logger.info("User data: " + JSON.stringify(newUser));
         // create token
-        const token = createToken(newUser.id);
+        const token = createToken({ ...newUser, password: null });
 
         user_logger.info("User registered successfully");
         res.status(201).json({ token });

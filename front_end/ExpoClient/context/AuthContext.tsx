@@ -5,6 +5,9 @@ import { login, register, getUserById } from '../service/api/UserService';
 import { AuthProps } from '../interfaces/AuthProps';
 import { AuthState } from '../interfaces/AuthState';
 import { AuthenticationResponse } from '../interfaces/AuthenticationResponse';
+import { User } from '../interfaces/User';
+import { jwtDecode } from 'jwt-decode';
+import { router } from 'expo-router';
 
 const TOKEN_KEY = 'token';
 const USER_KEY = 'user';
@@ -28,14 +31,17 @@ export const AuthProvider = ({ children }: any) => {
             const token = await SecureStore.getItemAsync(TOKEN_KEY);
             const user = await SecureStore.getItemAsync(USER_KEY);
 
-            if (token) {
+            if (token && isTokenValid(token)) {
                 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-                
+                console.log('Token: ', token);
                 setAuthState({
                     token,
                     authenticated: true,
                     user: user ? JSON.parse(user) : null
                 });
+
+            } else {
+                handleLogout();
             }
         }
         loadTokenAndUser();
@@ -50,12 +56,17 @@ export const AuthProvider = ({ children }: any) => {
         }
     };
 
+    const getUserFromToken = (token: string): User => {
+        const decodedPayload = jwtDecode(token);
+        const user = (decodedPayload as any).id as User
+        return user;
+    }
+
     const handleLogin = async (email: string, password: string) => {
         try {
             const response = await login({email, password});
             const token = (response as any).data.token;
-            const user = (response as any).data.user;
-
+            const user = getUserFromToken(token);
             setAuthState({
                 token,
                 authenticated: true,
@@ -90,6 +101,12 @@ export const AuthProvider = ({ children }: any) => {
         });
     }
 
+    const isTokenValid = (token: string) => {
+        const decodedPayload = jwtDecode(token);
+        const expiration = new Date((decodedPayload as any).exp * 1000);
+        const now = new Date();
+        return now < expiration;
+    }
 
     const value = {
         onRegister: handleRegister,
