@@ -41,6 +41,11 @@ const createEvent = async (req, res) => {
             },
             include: {
                 Sport: true,
+                createdBy: {
+                    select: {
+                        username: true,
+                    }
+                }
             }
         });
         event_logger.info("Event created successfully");
